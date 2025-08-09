@@ -1,3 +1,4 @@
+'use client'
 import { Card, Button } from '@/components/ui'
 
 export default function Page(){
