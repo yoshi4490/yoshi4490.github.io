@@ -1,0 +1,31 @@
+{
+  "name": "keiri-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest"
+  },
+  "dependencies": {
+    "next": "14.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "clsx": "2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.5.6",
+    "@types/react": "18.2.15",
+    "@types/react-dom": "18.2.7",
+    "autoprefixer": "10.4.16",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.4",
+    "jest": "29.7.0",
+    "@types/jest": "29.5.12",
+    "postcss": "8.4.31",
+    "tailwindcss": "3.4.7",
+    "typescript": "5.5.4"
+  }
+}
