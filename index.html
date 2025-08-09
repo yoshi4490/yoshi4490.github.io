@@ -3,347 +3,418 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>経理実務シミュレーター（試作）</title>
+  <title>経理実務シミュレーター - Freee風スタイル</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif; margin: 0; background: #f7f7f8; color:#222; }
-    header { background: white; border-bottom: 1px solid #e5e7eb; padding: 16px 20px; position: sticky; top: 0; z-index: 10; }
-    .brand { font-weight: 700; }
-    .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
-    .tabs { display: flex; gap: 8px; margin: 12px 0 24px; flex-wrap: wrap; }
-    .tab { background: white; border: 1px solid #e5e7eb; padding: 10px 14px; border-radius: 10px; cursor: pointer; }
-    .tab.active { background: #111827; color: white; }
-    .card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
-    .muted { color:#6b7280; }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; }
-    label { display:block; font-size: 12px; color:#374151; margin-bottom: 4px; }
-    input, select, button, textarea { font-size: 14px; }
-    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; }
-    button.primary { background:#111827; color:white; border: none; padding: 10px 14px; border-radius: 10px; cursor: pointer; }
-    button.ghost { background:white; color:#111827; border: 1px solid #e5e7eb; padding: 10px 14px; border-radius: 10px; cursor: pointer; }
-    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .kpi { display:flex; gap:16px; }
-    .kpi .box { background:white; border:1px solid #e5e7eb; border-radius:12px; padding:12px 16px; }
-    .ok { color: #059669; font-weight: 600; }
-    .ng { color: #dc2626; font-weight: 600; }
-    .small { font-size:12px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .footer { color:#6b7280; font-size:12px; margin-top:16px; }
-    .badge { display:inline-block; font-size:12px; padding:2px 8px; border-radius:20px; border:1px solid #e5e7eb; }
+    :root{
+      --ink:#0f172a;
+      --muted:#64748b;
+      --bg:#f6f9fb;
+      --panel:#ffffff;
+      --border:#e2e8f0;
+      --brand:#12b4a6;      /* アクア系（freee風の爽やかトーン） */
+      --brand-ink:#0a5e57;
+      --brand-weak:#e6f7f5;
+      --accent:#2563eb;
+      --danger:#dc2626;
+      --ok:#059669;
+      --shadow: 0 8px 20px rgba(2, 80, 70, .06);
+      --radius: 14px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif;
+      color:var(--ink);
+      background: var(--bg);
+    }
+    .layout{ display:grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px 1fr; height:100%; }
+    .topbar{
+      grid-column: 1 / span 2;
+      height:64px; background:var(--panel); border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; padding:0 18px;
+      position:sticky; top:0; z-index:5;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:700; }
+    .logo{
+      width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, var(--brand), #7de3d7);
+      box-shadow: var(--shadow);
+    }
+    .top-actions{ display:flex; gap:8px; align-items:center; }
+    .btn{
+      border:1px solid var(--border); background:white; padding:8px 12px; border-radius:12px; cursor:pointer; font-size:13px;
+    }
+    .btn.primary{ background:var(--brand); border-color:transparent; color:white; }
+    .btn.ghost{ background:white; }
+    .search{ display:flex; align-items:center; gap:8px; background:#f1f5f9; border:1px solid var(--border); padding:8px 10px; border-radius:12px; }
+    .search input{ border:none; outline:none; background:transparent; width:240px; font-size:13px; }
+    .sidebar{
+      grid-row: 2; background:var(--panel); border-right:1px solid var(--border); padding:14px; position:sticky; top:64px; height:calc(100vh - 64px); overflow:auto;
+    }
+    .side-section{ margin-bottom:16px; }
+    .side-title{ color:var(--muted); font-size:12px; margin:8px 10px; }
+    .nav{ display:grid; gap:4px; }
+    .nav a{
+      display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:10px; color:#0f172a; text-decoration:none;
+    }
+    .nav a.active, .nav a:hover{ background:var(--brand-weak); color:var(--brand-ink); }
+    .chip{ font-size:11px; color:var(--brand-ink); background:var(--brand-weak); padding:2px 8px; border-radius:999px; border:1px solid #d9f2ef; }
+    .content{ grid-row:2; padding:18px; overflow:auto; }
+    .page{ max-width:1100px; margin:0 auto; display:none; }
+    .page.active{ display:block; animation:fade .15s ease-in; }
+    @keyframes fade{ from{opacity:.6; transform:translateY(2px);} to{opacity:1; transform:none;} }
+    .card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow: var(--shadow); }
+    .card .head{ padding:14px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .card .body{ padding:16px; }
+    .muted{ color:var(--muted); }
+    .kpis{ display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; }
+    .kpi{ padding:14px; }
+    .kpi .label{ font-size:12px; color:var(--muted); }
+    .kpi .value{ font-weight:700; font-size:20px; }
+    .grid{ display:grid; gap:12px; }
+    .two{ grid-template-columns: 1fr 1fr; }
+    .table{ width:100%; border-collapse:collapse; }
+    .table th, .table td{ padding:10px 8px; border-bottom:1px solid var(--border); text-align:left; font-size:13px; }
+    .table th{ color:var(--muted); font-weight:600; }
+    label{ display:block; font-size:12px; color:#334155; margin-bottom:6px; }
+    input, select, textarea{
+      width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:12px; font-size:13px; background:white; outline:none;
+    }
+    textarea{ resize:vertical; }
+    .row{ display:flex; gap:10px; align-items:center; }
+    .ok{ color:var(--ok); font-weight:600; }
+    .ng{ color:var(--danger); font-weight:600; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace; }
+    .badge{ font-size:11px; padding:3px 8px; border-radius:999px; background:var(--brand-weak); color:var(--brand-ink); border:1px solid #d9f2ef; }
+    .note{ background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:10px; border-radius:10px; font-size:12px; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="row" style="align-items:center; justify-content: space-between;">
-        <div class="brand">経理実務シミュレーター（試作）</div>
-        <div class="muted small">架空会社：ACME合同会社 / 2025年4月期</div>
+  <div class="layout">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>経理実務シミュレーター</div>
+        <span class="chip">beta</span>
+      </div>
+      <div class="top-actions">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="7" stroke="#64748b" stroke-width="1.5"/><path d="M14 14l4 4" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input placeholder="取引先・勘定科目・伝票番号で検索"/>
+        </div>
+        <button class="btn">ヘルプ</button>
+        <button class="btn primary" onclick="alert('この版はデモです。')">新規伝票</button>
       </div>
     </div>
-  </header>
-  <main class="container">
-    <div class="tabs">
-      <div class="tab active" data-tab="daily">日常業務トレーニング</div>
-      <div class="tab" data-tab="monthly">月次決算シミュレーター</div>
-      <div class="tab" data-tab="report">成績レポート</div>
-    </div>
 
-    <!-- 日常業務 -->
-    <section id="daily" class="tabpane">
-      <div class="card">
-        <h3>① 請求書の計上</h3>
-        <p class="muted">取引先Aへ税抜 <b>100,000円</b>（消費税10%）の売上。計上日は <b>4/30</b>、入金予定は <b>5/31</b>。仕訳を入力してください。</p>
-        <div class="grid">
-          <div>
-            <label>借方科目</label>
-            <select id="inv_d_kamoku">
-              <option value="">選択</option>
-              <option>売掛金</option>
-              <option>当座預金</option>
-              <option>現金</option>
-            </select>
-          </div>
-          <div>
-            <label>借方金額</label>
-            <input id="inv_d_amount" placeholder="例: 110000">
-          </div>
-          <div>
-            <label>貸方科目（1）</label>
-            <select id="inv_c1_kamoku">
-              <option value="">選択</option>
-              <option>売上高</option>
-              <option>仮受消費税</option>
-              <option>前受金</option>
-            </select>
-          </div>
-          <div>
-            <label>貸方金額（1）</label>
-            <input id="inv_c1_amount" placeholder="例: 100000">
-          </div>
-          <div>
-            <label>貸方科目（2 任意）</label>
-            <select id="inv_c2_kamoku">
-              <option value="">（なし）</option>
-              <option>仮受消費税</option>
-              <option>売上高</option>
-            </select>
-          </div>
-          <div>
-            <label>貸方金額（2 任意）</label>
-            <input id="inv_c2_amount" placeholder="例: 10000">
-          </div>
-        </div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="primary" onclick="gradeInvoice()">採点</button>
-          <span id="inv_result" class="small"></span>
+    <aside class="sidebar">
+      <div class="side-section">
+        <div class="side-title">メイン</div>
+        <div class="nav">
+          <a href="#dash" data-page="dash" class="active">🏠 ダッシュボード</a>
+          <a href="#sales" data-page="sales">🧾 請求・売上</a>
+          <a href="#receipt" data-page="receipt">💰 入金消込</a>
+          <a href="#expense" data-page="expense">🧾 経費精算</a>
+          <a href="#journal" data-page="journal">📒 振替伝票</a>
+          <a href="#close" data-page="close">📊 月次決算</a>
+          <a href="#report" data-page="report">📈 学習レポート</a>
         </div>
       </div>
-
-      <div class="card">
-        <h3>② 入金消込</h3>
-        <p class="muted">銀行入金：5/31 取引先Aより <b>110,000円</b>。該当請求書と消込し、仕訳を入力してください。</p>
-        <div class="grid">
-          <div>
-            <label>借方科目</label>
-            <select id="rcv_d_kamoku">
-              <option value="">選択</option>
-              <option>当座預金</option>
-              <option>普通預金</option>
-              <option>現金</option>
-            </select>
-          </div>
-          <div>
-            <label>借方金額</label>
-            <input id="rcv_d_amount" placeholder="110000">
-          </div>
-          <div>
-            <label>貸方科目</label>
-            <select id="rcv_c_kamoku">
-              <option value="">選択</option>
-              <option>売掛金</option>
-              <option>売上高</option>
-              <option>前受金</option>
-            </select>
-          </div>
-          <div>
-            <label>貸方金額</label>
-            <input id="rcv_c_amount" placeholder="110000">
-          </div>
-        </div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="primary" onclick="gradeReceipt()">採点</button>
-          <span id="rcv_result" class="small"></span>
+      <div class="side-section">
+        <div class="side-title">クイック</div>
+        <div class="nav">
+          <a href="#help" data-page="help">❓ ヘルプ／使い方</a>
         </div>
       </div>
+    </aside>
 
-      <div class="card">
-        <h3>③ 経費精算チェック</h3>
-        <p class="muted">社員提出：通信費（4月分）<b>22,000円（税込）</b>。月次締めで未払計上が必要です。仕訳を入力してください。（税込方式OK）</p>
-        <div class="grid">
-          <div>
-            <label>借方科目</label>
-            <select id="exp_d_kamoku">
-              <option value="">選択</option>
-              <option>通信費</option>
-              <option>水道光熱費</option>
-              <option>旅費交通費</option>
-            </select>
+    <main class="content">
+      <!-- Dashboard -->
+      <section id="dash" class="page active">
+        <div class="grid kpis">
+          <div class="card kpi"><div class="label">未処理伝票</div><div class="value">3</div></div>
+          <div class="card kpi"><div class="label">消込待ち</div><div class="value">1</div></div>
+          <div class="card kpi"><div class="label">月次締め進捗</div><div class="value">40%</div></div>
+          <div class="card kpi"><div class="label">総合スコア</div><div class="value mono" id="score_total">0%</div></div>
+        </div>
+        <div class="grid two" style="margin-top:12px;">
+          <div class="card">
+            <div class="head"><div>最近の取引</div><span class="badge">デモ</span></div>
+            <div class="body">
+              <table class="table">
+                <thead><tr><th>日付</th><th>内容</th><th>金額</th><th>状態</th></tr></thead>
+                <tbody>
+                  <tr><td>4/30</td><td>取引先A 請求書</td><td class="mono">110,000</td><td><span class="badge">計上済</span></td></tr>
+                  <tr><td>5/31</td><td>取引先A 入金</td><td class="mono">110,000</td><td><span class="badge">消込済</span></td></tr>
+                  <tr><td>4/30</td><td>通信費（4月分）</td><td class="mono">22,000</td><td><span class="badge">未払計上</span></td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div>
-            <label>借方金額</label>
-            <input id="exp_d_amount" placeholder="22000">
-          </div>
-          <div>
-            <label>貸方科目</label>
-            <select id="exp_c_kamoku">
-              <option value="">選択</option>
-              <option>未払費用</option>
-              <option>未払金</option>
-              <option>買掛金</option>
-            </select>
-          </div>
-          <div>
-            <label>貸方金額</label>
-            <input id="exp_c_amount" placeholder="22000">
+          <div class="card">
+            <div class="head"><div>ショートカット</div></div>
+            <div class="body">
+              <div class="row" style="gap:8px; flex-wrap:wrap;">
+                <button class="btn" onclick="nav('sales')">売上計上</button>
+                <button class="btn" onclick="nav('receipt')">入金消込</button>
+                <button class="btn" onclick="nav('expense')">経費精算</button>
+                <button class="btn" onclick="nav('close')">月次締め</button>
+              </div>
+              <div class="note" style="margin-top:12px;">※ このデモは「freee風」のUIを参考にしたオリジナルデザインです。</div>
+            </div>
           </div>
         </div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="primary" onclick="gradeExpense()">採点</button>
-          <span id="exp_result" class="small"></span>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 月次決算 -->
-    <section id="monthly" class="tabpane" style="display:none;">
-      <div class="card">
-        <div class="row" style="align-items:center; justify-content: space-between;">
-          <h3>月次決算（4月）</h3>
-          <span class="badge">試算表を一致させよう</span>
-        </div>
-        <p class="muted">4月末の必要仕訳を入力し、試算表（簡易）を完成させてください。</p>
-        <div class="grid">
-          <div>
-            <label>仕訳（1行ずつ）</label>
-            <textarea id="monthly_journal" rows="6" placeholder="例）
-（1）売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000
-（2）通信費 22,000 / 未払費用 22,000
-"></textarea>
+      <!-- Sales / Invoice -->
+      <section id="sales" class="page">
+        <div class="card">
+          <div class="head"><div>請求・売上の計上</div><button class="btn primary" onclick="gradeInvoice()">採点</button></div>
+          <div class="body grid two">
+            <div>
+              <label>借方科目</label>
+              <select id="inv_d_k"><option>売掛金</option><option>当座預金</option><option>現金</option></select>
+              <label style="margin-top:8px;">借方金額</label>
+              <input id="inv_d_a" placeholder="110000">
+            </div>
+            <div>
+              <div class="grid two">
+                <div>
+                  <label>貸方科目（1）</label>
+                  <select id="inv_c1_k"><option>売上高</option><option>仮受消費税</option><option>前受金</option></select>
+                </div>
+                <div>
+                  <label>貸方金額（1）</label><input id="inv_c1_a" placeholder="100000">
+                </div>
+                <div>
+                  <label>貸方科目（2 任意）</label>
+                  <select id="inv_c2_k"><option>（なし）</option><option>仮受消費税</option><option>売上高</option></select>
+                </div>
+                <div>
+                  <label>貸方金額（2 任意）</label><input id="inv_c2_a" placeholder="10000">
+                </div>
+              </div>
+            </div>
+            <div class="row" style="grid-column: 1 / -1; justify-content: space-between;">
+              <div id="inv_msg" class="muted"></div>
+              <div class="row muted"><div>伝票番号</div><div class="mono">SL-2404-001</div></div>
+            </div>
           </div>
-          <div>
-            <label>チェック結果</label>
-            <div id="monthly_result" class="card" style="height:150px; overflow:auto;"></div>
+        </div>
+      </section>
+
+      <!-- Receipt -->
+      <section id="receipt" class="page">
+        <div class="card">
+          <div class="head"><div>入金の消込</div><button class="btn primary" onclick="gradeReceipt()">採点</button></div>
+          <div class="body grid two">
+            <div>
+              <label>借方科目</label>
+              <select id="rcv_d_k"><option>当座預金</option><option>普通預金</option><option>現金</option></select>
+              <label style="margin-top:8px;">借方金額</label>
+              <input id="rcv_d_a" placeholder="110000">
+            </div>
+            <div>
+              <label>貸方科目</label>
+              <select id="rcv_c_k"><option>売掛金</option><option>売上高</option><option>前受金</option></select>
+              <label style="margin-top:8px;">貸方金額</label>
+              <input id="rcv_c_a" placeholder="110000">
+            </div>
+            <div class="row" style="grid-column: 1 / -1; justify-content: space-between;">
+              <div id="rcv_msg" class="muted"></div>
+              <div class="row muted"><div>入金日</div><div class="mono">2025-05-31</div></div>
+            </div>
           </div>
         </div>
-        <div style="margin-top:12px; display:flex; gap:8px;">
-          <button class="primary" onclick="gradeMonthly()">採点</button>
-          <button class="ghost" onclick="fillExample()">例を入れる</button>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- レポート -->
-    <section id="report" class="tabpane" style="display:none;">
-      <div class="card">
-        <h3>成績レポート（ローカル）</h3>
-        <div class="kpi">
-          <div class="box"><div class="muted small">日常業務 正答</div><div id="score_daily" class="mono">0/3</div></div>
-          <div class="box"><div class="muted small">月次決算 正答</div><div id="score_monthly" class="mono">0/2</div></div>
-          <div class="box"><div class="muted small">総合スコア</div><div id="score_total" class="mono">0%</div></div>
+      <!-- Expense -->
+      <section id="expense" class="page">
+        <div class="card">
+          <div class="head"><div>経費精算（未払計上）</div><button class="btn primary" onclick="gradeExpense()">採点</button></div>
+          <div class="body grid two">
+            <div>
+              <label>借方科目</label>
+              <select id="exp_d_k"><option>通信費</option><option>水道光熱費</option><option>旅費交通費</option></select>
+              <label style="margin-top:8px;">借方金額</label>
+              <input id="exp_d_a" placeholder="22000">
+            </div>
+            <div>
+              <label>貸方科目</label>
+              <select id="exp_c_k"><option>未払費用</option><option>未払金</option><option>買掛金</option></select>
+              <label style="margin-top:8px;">貸方金額</label>
+              <input id="exp_c_a" placeholder="22000">
+            </div>
+            <div class="row" style="grid-column: 1 / -1; justify-content: space-between;">
+              <div id="exp_msg" class="muted"></div>
+              <div class="row muted"><div>対象月</div><div class="mono">2025-04</div></div>
+            </div>
+          </div>
         </div>
-        <div class="footer">※学習ログはブラウザ内のみ保存。実サービスではユーザー別に保存し、企業共有用レポートを発行します。</div>
-      </div>
-    </section>
+      </section>
 
-  </main>
+      <!-- Journal -->
+      <section id="journal" class="page">
+        <div class="card">
+          <div class="head"><div>振替伝票作成</div><button class="btn">テンプレから作成</button></div>
+          <div class="body">
+            <table class="table">
+              <thead><tr><th>借方科目</th><th>金額</th><th>貸方科目</th><th>金額</th><th>摘要</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><input placeholder="通信費"></td>
+                  <td><input placeholder="22000"></td>
+                  <td><input placeholder="未払費用"></td>
+                  <td><input placeholder="22000"></td>
+                  <td><input placeholder="4月分通信費の未払計上"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row" style="margin-top:10px; justify-content:flex-end;">
+              <button class="btn primary" onclick="alert('デモでは保存しません')">保存</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Monthly Close -->
+      <section id="close" class="page">
+        <div class="card">
+          <div class="head"><div>月次決算（4月）</div><button class="btn primary" onclick="gradeMonthly()">試算表チェック</button></div>
+          <div class="body grid">
+            <div class="two">
+              <div>
+                <label>仕訳（1行ずつ）</label>
+                <textarea id="monthly_journal" rows="6" placeholder="（1）売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000
+（2）通信費 22,000 / 未払費用 22,000"></textarea>
+                <div class="note" style="margin-top:10px;">※ 本実装では税区分や承認フローまで検証予定</div>
+              </div>
+              <div>
+                <div class="card">
+                  <div class="head"><div>チェック結果</div></div>
+                  <div class="body" id="monthly_result">未チェック</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Report -->
+      <section id="report" class="page">
+        <div class="card">
+          <div class="head"><div>学習レポート</div></div>
+          <div class="body grid two">
+            <div>
+              <table class="table">
+                <thead><tr><th>カテゴリ</th><th>正答数</th></tr></thead>
+                <tbody>
+                  <tr><td>日常業務</td><td class="mono" id="score_daily">0/3</td></tr>
+                  <tr><td>月次決算</td><td class="mono" id="score_monthly">0/2</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <div class="kpi card">
+                <div class="label">総合スコア</div>
+                <div class="value mono" id="score_total2">0%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Help -->
+      <section id="help" class="page">
+        <div class="card">
+          <div class="head"><div>ヘルプ / 使い方</div></div>
+          <div class="body">
+            <p class="muted">サイドバーの項目を順に進めれば、「freee風」のワークフローで練習できます。実装はオリジナルであり、特定サービスの画面を再現したものではありません。</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
 
 <script>
-  // Simple tab switch
-  document.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.tabpane').forEach(x=>x.style.display='none');
-      t.classList.add('active');
-      document.getElementById(t.dataset.tab).style.display='block';
+  // Navigation
+  document.querySelectorAll('.nav a').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const id = a.dataset.page;
+      nav(id);
     });
   });
-
-  // state
-  const state = { daily: [false,false,false], monthly: [false,false] };
-
-  function fmtResult(el, ok, msgOK, msgNG) {
-    el.innerHTML = ok ? `<span class='ok'>✔ ${msgOK}</span>` : `<span class='ng'>✖ ${msgNG}</span>`;
+  function nav(id){
+    document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));
+    document.querySelector('.nav a[data-page="'+id+'"]').classList.add('active');
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    localStorage.setItem('active_page', id);
   }
+  (function(){ const s = localStorage.getItem('active_page'); if(s) nav(s); })();
 
+  // Grading logic
+  function set(el,msg,ok){ el.innerHTML = ok ? `<span class='ok'>✔ ${msg}</span>` : `<span class='ng'>✖ ${msg}</span>`; }
   function gradeInvoice(){
-    const dKamoku = document.getElementById('inv_d_kamoku').value;
-    const dAmt = +document.getElementById('inv_d_amount').value;
-    const c1Kamoku = document.getElementById('inv_c1_kamoku').value;
-    const c1Amt = +document.getElementById('inv_c1_amount').value;
-    const c2Kamoku = document.getElementById('inv_c2_kamoku').value;
-    const c2Amt = +document.getElementById('inv_c2_amount').value || 0;
-
-    const ok =
-      dKamoku === '売掛金' && dAmt === 110000 &&
-      ((c1Kamoku === '売上高' && c1Amt === 100000 && c2Kamoku === '仮受消費税' && c2Amt === 10000) ||
-       (c1Kamoku === '売上高' && c1Amt === 110000 && c2Kamoku === ''));
-
-    fmtResult(document.getElementById('inv_result'), ok,
-      '正解：売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000（内税も可）',
-      '不正解：売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000 が基本（内税110,000でも可）');
-    state.daily[0] = ok;
-    updateReport();
+    const ok = document.getElementById('inv_d_k').value==='売掛金' &&
+      Number(document.getElementById('inv_d_a').value)===110000 &&
+      ((document.getElementById('inv_c1_k').value==='売上高' && Number(document.getElementById('inv_c1_a').value)===100000 &&
+        document.getElementById('inv_c2_k').value==='仮受消費税' && Number(document.getElementById('inv_c2_a').value||0)===10000) ||
+       (document.getElementById('inv_c1_k').value==='売上高' && Number(document.getElementById('inv_c1_a').value)===110000 && document.getElementById('inv_c2_k').value==='（なし）'));
+    const el = document.getElementById('inv_msg');
+    set(el, ok ? '正解：売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000（内税も可）' : '不正解：基本は売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000（内税でも可）', ok);
+    scoreUpdate('daily', ok);
   }
-
   function gradeReceipt(){
-    const dKamoku = document.getElementById('rcv_d_kamoku').value;
-    const dAmt = +document.getElementById('rcv_d_amount').value;
-    const cKamoku = document.getElementById('rcv_c_kamoku').value;
-    const cAmt = +document.getElementById('rcv_c_amount').value;
-
-    const ok = (['当座預金','普通預金','現金'].includes(dKamoku)) && dAmt===110000 && cKamoku==='売掛金' && cAmt===110000;
-
-    fmtResult(document.getElementById('rcv_result'), ok,
-      '正解：当座/普通/現金 110,000 / 売掛金 110,000',
-      '不正解：入金は当座/普通/現金、消込は売掛金へ。金額は110,000');
-    state.daily[1] = ok;
-    updateReport();
+    const ok = ['当座預金','普通預金','現金'].includes(document.getElementById('rcv_d_k').value) &&
+      Number(document.getElementById('rcv_d_a').value)===110000 &&
+      document.getElementById('rcv_c_k').value==='売掛金' &&
+      Number(document.getElementById('rcv_c_a').value)===110000;
+    const el = document.getElementById('rcv_msg');
+    set(el, ok ? '正解：当座/普通/現金 110,000 / 売掛金 110,000' : '不正解：入金は当座/普通/現金、消込は売掛金。金額110,000', ok);
+    scoreUpdate('daily', ok);
   }
-
   function gradeExpense(){
-    const dKamoku = document.getElementById('exp_d_kamoku').value;
-    const dAmt = +document.getElementById('exp_d_amount').value;
-    const cKamoku = document.getElementById('exp_c_kamoku').value;
-    const cAmt = +document.getElementById('exp_c_amount').value;
-
-    const ok = dKamoku==='通信費' && cKamoku==='未払費用' && dAmt===22000 && cAmt===22000;
-
-    fmtResult(document.getElementById('exp_result'), ok,
-      '正解：通信費 22,000 / 未払費用 22,000（税抜方式等の会社方針は実務で調整）',
-      '不正解：4月分は未払計上。通信費 / 未払費用 22,000');
-    state.daily[2] = ok;
-    updateReport();
+    const ok = document.getElementById('exp_d_k').value==='通信費' &&
+      document.getElementById('exp_c_k').value==='未払費用' &&
+      Number(document.getElementById('exp_d_a').value)===22000 &&
+      Number(document.getElementById('exp_c_a').value)===22000;
+    const el = document.getElementById('exp_msg');
+    set(el, ok ? '正解：通信費 22,000 / 未払費用 22,000' : '不正解：4月分は未払計上（通信費 / 未払費用 22,000）', ok);
+    scoreUpdate('daily', ok);
   }
-
-  function parseLine(line){
-    // very naive parser: 科目 金額 / 科目 金額 (, 科目 金額)?
-    const tokens = line.replace(/（.*?）/g,'').replace(/[(),]/g,' ').split(/\s+/).filter(Boolean);
-    // Expect: 科目 金額 / 科目 金額 [科目 金額]
-    // We won't fail on weird formats; we'll search for known combos
-    return tokens;
-  }
-
   function gradeMonthly(){
     const text = document.getElementById('monthly_journal').value;
-    const lines = text.split('\n').map(s=>s.trim()).filter(Boolean);
-    let ok1 = false, ok2 = false;
-    lines.forEach(l=>{
-      const t = parseLine(l);
-      const str = l;
-      if((/売掛金/.test(str) && /110000/.test(str) && /売上高/.test(str) && (/100000/.test(str) || /110000/.test(str))){
-        // 仮受消費税があれば加点
-        ok1 = true;
-      }
-      if((/通信費/.test(str) && /22000/.test(str) && (/未払費用/.test(str) || /未払金/.test(str)))){
-        ok2 = true;
-      }
-    });
-    state.monthly[0] = ok1;
-    state.monthly[1] = ok2;
-
+    const ok1 = /売掛金/.test(text) && /110,?000/.test(text) && /売上高/.test(text);
+    const ok2 = /通信費/.test(text) && /22,?000/.test(text) && /(未払費用|未払金)/.test(text);
     const box = document.getElementById('monthly_result');
-    box.innerHTML = `
-      <div>${ok1 ? "✔" : "✖"} 売掛計上：売掛金 / 売上高（仮受消費税 含む/内税可）</div>
-      <div>${ok2 ? "✔" : "✖"} 未払計上：通信費 / 未払費用（22,000）</div>
-      <div class='small muted' style='margin-top:8px;'>※ 本試作では簡易チェック。実装版では税区分・締日・消込・伝票承認などを厳密に検証します。</div>
-    `;
-    updateReport();
+    box.innerHTML = `<div>${ok1?'✔':'✖'} 売掛計上（売掛金 / 売上高 + 仮受消費税）</div>
+                     <div>${ok2?'✔':'✖'} 未払計上（通信費 / 未払費用 22,000）</div>`;
+    scoreUpdate('monthly', ok1 && ok2);
   }
 
-  function fillExample(){
-    document.getElementById('monthly_journal').value =
-`（1）売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000
-（2）通信費 22,000 / 未払費用 22,000`;
+  // Simple score tracker
+  function scoreUpdate(section, ok){
+    const s = JSON.parse(localStorage.getItem('score')||'{"daily":0,"monthly":0,"total":0}');
+    if(section==='daily'){ s.daily = Math.min(3, s.daily + (ok?1:0)); }
+    if(section==='monthly'){ s.monthly = Math.min(2, s.monthly + (ok?1:0)); }
+    const total = Math.round(((s.daily/3)*0.6 + (s.monthly/2)*0.4) * 100);
+    s.total = total;
+    localStorage.setItem('score', JSON.stringify(s));
+    // reflect UI
+    document.getElementById('score_total').textContent = total+'%';
+    document.getElementById('score_daily').textContent = s.daily+'/3';
+    document.getElementById('score_monthly').textContent = s.monthly+'/2';
+    document.getElementById('score_total2').textContent = total+'%';
   }
-
-  function updateReport(){
-    const d = state.daily.filter(Boolean).length;
-    const m = state.monthly.filter(Boolean).length;
-    document.getElementById('score_daily').textContent = d + "/3";
-    document.getElementById('score_monthly').textContent = m + "/2";
-    const total = Math.round(((d/3) * 0.6 + (m/2) * 0.4) * 100);
-    document.getElementById('score_total').textContent = total + "%";
-    localStorage.setItem('sim_score', JSON.stringify({d, m, total}));
-  }
-
-  // restore
-  (function(){
-    const s = localStorage.getItem('sim_score');
-    if(s){
-      const {d,m,total} = JSON.parse(s);
-      document.getElementById('score_daily').textContent = d + "/3";
-      document.getElementById('score_monthly').textContent = m + "/2";
-      document.getElementById('score_total').textContent = total + "%";
-    }
+  (function(){ // restore score
+    const s = JSON.parse(localStorage.getItem('score')||'{"daily":0,"monthly":0,"total":0}');
+    document.getElementById('score_total').textContent = s.total+'%';
+    document.getElementById('score_daily').textContent = s.daily+'/3';
+    document.getElementById('score_monthly').textContent = s.monthly+'/2';
+    document.getElementById('score_total2').textContent = s.total+'%';
   })();
 </script>
 </body>
