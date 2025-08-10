@@ -1,0 +1,20 @@
+
+/* ===== 経理ラボベース Add-on Styles (namespaced) ===== */
+.klb-container{max-width:1080px;margin:0 auto;padding:0 16px}
+.klb-header{position:sticky;top:0;z-index:10;background:rgba(248,250,252,.9);backdrop-filter:blur(8px);border-bottom:1px solid #e2e8f0}
+.klb-header-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 4px}
+.klb-nav{display:flex;gap:10px}
+.klb-nav a{padding:8px 12px;border-radius:12px;font-weight:700;text-decoration:none}
+.klb-nav a:hover{background:#e2e8f0}
+.klb-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:14px;font-weight:800;border:1px solid #cbd5e1;background:#fff;text-decoration:none}
+.klb-btn--primary{background:#0ea5e9;color:#fff;border-color:transparent}
+.klb-btn--primary:hover{background:#0284c7}
+.klb-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:center;padding:24px 0}
+.klb-card{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:20px;box-shadow:0 10px 20px rgba(15,23,42,.04)}
+.klb-grid{display:grid;gap:12px;grid-template-columns:repeat(3, minmax(0,1fr))}
+.klb-card:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(15,23,42,.06);transition:all .12s ease}
+.klb-section{margin:28px 0}
+.klb-section h1,.klb-section h2{margin:0 0 10px}
+.klb-lead{color:#475569}
+.klb-badge{display:inline-block;font-size:12px;padding:6px 8px;background:#e2e8f0;border-radius:999px}
+@media (max-width:880px){.klb-hero{grid-template-columns:1fr}.klb-grid{grid-template-columns:1fr}}
