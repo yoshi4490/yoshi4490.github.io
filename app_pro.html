@@ -1,0 +1,91 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>経理ラボベース｜学習（保存対応）</title>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f7fbff;--ink:#0f172a;--muted:#64748b;--panel:#ffffff;--border:#e2e8f0;--brand:#12b4a6;--brand2:#3bb3df;--ok:#10b981;--ng:#ef4444;--shadow:0 10px 30px rgba(17,24,39,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,'Noto Sans JP',sans-serif;background:linear-gradient(180deg,#f7fbff 0%,#fbffff 100%);color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:14px 18px}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.85));backdrop-filter: blur(6px);border-bottom:1px solid var(--border)}
+.brand{display:flex;gap:10px;align-items:center;font-weight:800}
+.progress{height:10px;background:#e5f3ff;border-radius:999px;overflow:hidden}.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--brand),var(--brand2));transition: width .3s ease}
+.btn{padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--brand);color:#fff;border:none}
+.muted{color:var(--muted)}.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
+.card .head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.card .body{padding:16px}.grid{display:grid;gap:12px}.two{grid-template-columns:1fr 1fr}
+</style>
+</head><body>
+<header><div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
+  <div class="brand"><img src="assets/logo.svg" width="24" height="24"><span>学習アプリ（保存対応）</span></div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a class="btn" href="index.html">ホーム</a>
+    <a class="btn" href="auth.html">ログイン</a>
+    <div class="progress" style="width:220px;"><div id="bar" class="bar"></div></div>
+    <div id="pct" style="min-width:48px;text-align:right;">0%</div>
+  </div>
+</div></header>
+<main class="wrap">
+  <div class="card"><div class="head"><div>Day1 請求の計上（デモ）</div></div><div class="body">
+    <p class="muted">B社に税抜100,000円で請求（消費税10%）。売掛金を計上してください。</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+        <label>借方科目</label><input id="dK" value="売掛金">
+        <label>借方金額</label><input id="dA" value="110000">
+      </div>
+      <div>
+        <label>貸方科目</label><input id="cK" value="売上高">
+        <label>貸方金額</label><input id="cA" value="100000">
+      </div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn primary" id="grade">採点</button>
+    </div>
+    <div id="msg" class="muted" style="margin-top:8px;"></div>
+  </div></div>
+</main>
+<script type="module">
+// ① Supabase初期化（未設定ならローカル保存のみで動く）
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const hasSupa = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+const supa = hasSupa ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth:{persistSession:true} }) : null;
+
+// ② 進捗バー（localStorageで常に動く）
+const SKEY='keiri_progress_demo';
+const state = JSON.parse(localStorage.getItem(SKEY) || '{"done":0,"total":10}');
+function updateBar(){ const p=Math.round((state.done/state.total)*100); document.getElementById('bar').style.width=p+'%'; document.getElementById('pct').textContent=p+'%'; }
+updateBar();
+
+// ③ 採点→保存（Supabase設定されていればサーバ保存、なければローカルのみ）
+document.getElementById('grade').onclick = async () => {
+  const dK = document.getElementById('dK').value.trim();
+  const dA = Number(document.getElementById('dA').value);
+  const cK = document.getElementById('cK').value.trim();
+  const cA = Number(document.getElementById('cA').value);
+  const ok = (dK==='売掛金' && dA===110000 && cK==='売上高' && cA===100000);
+  const msg = document.getElementById('msg');
+  if(!ok){ msg.innerHTML='× もう一歩。ヒント：借方 売掛金110,000 / 貸方 売上高100,000＋仮受10,000 でも可'; return; }
+  // ローカル進捗
+  if(state.done<1){ state.done=1; localStorage.setItem(SKEY, JSON.stringify(state)); updateBar(); }
+  msg.innerHTML='◎ 正解！ 進捗を保存しました。';
+
+  // サーバ保存（任意：設定されている場合のみ）
+  if(supa){
+    try{
+      const { data:{ user } } = await supa.auth.getUser();
+      if(!user){ msg.innerHTML += '（未ログインのためローカルのみ保存）'; return; }
+      const row = { user_id:user.id, day_index:1, status:'done', attempts:1, elapsed_seconds:30, last_answer:{dK,dA,cK,cA} };
+      const { error } = await supa.from('progress').upsert(row);
+      if(error) throw error;
+      msg.innerHTML += ' サーバにも保存しました。';
+    }catch(e){
+      console.warn(e);
+      msg.innerHTML += '（サーバ保存でエラー・ローカルは保存済み）';
+    }
+  }else{
+    msg.innerHTML += '（config.js 未設定のためローカルのみ）';
+  }
+};
+</script>
+</body></html>
