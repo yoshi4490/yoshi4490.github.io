@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>経理ラボベース｜コンテンツ管理（簡易CMS）</title>
+<style>
+body{margin:0;font-family:system-ui,'Noto Sans JP',sans-serif;background:#f7fbff;color:#0f172a}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:10px 0}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 10px 30px rgba(17,24,39,.06);padding:14px;margin:10px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{padding:8px 12px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;cursor:pointer}
+.btn.primary{background:#12b4a6;color:#fff;border:none}
+textarea, input{width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:10px;font-family:ui-monospace,Consolas,monospace}
+.small{font-size:12px;color:#64748b}
+.list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:860px){.list{grid-template-columns:1fr}}
+pre{white-space:pre-wrap;word-break:break-all;background:#f8feff;border:1px dashed #cfeff7;border-radius:10px;padding:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>コンテンツ管理（lessons.json）</h1>
+  <div class="card">
+    <div class="row">
+      <button class="btn" onclick="load()">読み込む</button>
+      <button class="btn" onclick="validate()">検証</button>
+      <button class="btn primary" onclick="save()">保存（ダウンロード）</button>
+      <label class="btn"><input type="file" id="file" accept="application/json" style="display:none" onchange="importFile(event)"> インポート</label>
+    </div>
+    <div class="small">※ 読み込んだJSONは下のエリアに表示されます。編集して「保存」でファイルとしてダウンロードできます。</div>
+  </div>
+  <div class="list">
+    <div class="card">
+      <h3>JSON編集</h3>
+      <textarea id="editor" rows="26"></textarea>
+    </div>
+    <div class="card">
+      <h3>プレビュー（タイトル一覧）</h3>
+      <div id="preview"></div>
+      <h3>検証結果</h3>
+      <pre id="result">—</pre>
+    </div>
+  </div>
+  <div class="card small">Tip: 新しいDayを追加するには、配列<code>days</code>にオブジェクトを1つ追加します（id/title/scene/hint/expects/mcq/svg 必須）。</div>
+</div>
+<script>
+async function load(){ const res = await fetch('lessons.json',{cache:'no-store'}); const data = await res.json(); editor.value = JSON.stringify(data, null, 2); renderTitles(data); }
+function importFile(ev){ const f=ev.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ editor.value=r.result; try{ renderTitles(JSON.parse(r.result)); }catch(e){ document.getElementById('result').textContent='JSONパースエラー: '+e.message; } }; r.readAsText(f); }
+function renderTitles(data){ const list=(data.days||[]).map((d,i)=> (i+1)+'. '+(d.title||'(無題)')).join('<br>'); document.getElementById('preview').innerHTML=list||'—'; }
+function validate(){ try{ const data = JSON.parse(editor.value); const errs=[]; if(!Array.isArray(data.days)) errs.push('days が配列ではありません'); (data.days||[]).forEach((d,i)=>{ ['id','title','scene','hint','expects','mcq','svg'].forEach(k=>{ if(!(k in d)) errs.push('Day'+(i+1)+': '+k+' がありません'); }); if(!Array.isArray(d.scene)||d.scene.length===0) errs.push('Day'+(i+1)+': scene は空です'); }); document.getElementById('result').textContent = errs.length? 'NG\n- '+errs.join('\n- ') : 'OK: 形式は問題ありません'; } catch(e){ document.getElementById('result').textContent='JSONパースエラー: '+e.message; } }
+function save(){ const blob = new Blob([editor.value], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'lessons.json'; a.click(); URL.revokeObjectURL(a.href); }
+</script>
+</body></html>
