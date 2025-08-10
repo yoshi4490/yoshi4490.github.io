@@ -1,6 +1,6 @@
 <!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>経理ラボベース｜学習（サーバ保存対応）</title>
+<title>経理ラボベース｜学習（保存・復元）</title>
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <style>
 :root{--bg:#f7fbff;--ink:#0f172a;--muted:#64748b;--panel:#ffffff;--border:#e2e8f0;--brand:#12b4a6;--brand2:#3bb3df;--ok:#10b981;--ng:#ef4444;--shadow:0 10px 30px rgba(17,24,39,.08)}
@@ -14,21 +14,31 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#fffff
 .muted{color:var(--muted)}.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
 .card .head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 .card .body{padding:16px}.grid{display:grid;gap:12px}.two{grid-template-columns:1fr 1fr}
+.badge{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:#fff;color:#0f172a}
+.badge.ok{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+.badge.ng{background:#fff1f2;border-color:#fecdd3;color:#9f1239}
+.list{display:grid;gap:8px}
+.item{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:12px;padding:8px 10px}
+.item .left{display:flex;align-items:center;gap:10px}
+.check{width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;display:inline-block}
+.check.done{background:#10b981;border-color:#10b981}
+#who{font-size:12px;color:#64748b}
 </style>
 </head><body>
 <header><div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
   <div class="brand"><img src="assets/logo.svg" width="24" height="24"><span>学習アプリ</span></div>
   <div style="display:flex;gap:10px;align-items:center;">
-    <a class="btn" href="index.html">ホーム</a>
+    <span id="who" class="muted">ゲスト</span>
+    <button id="logout" class="btn" style="display:none;">ログアウト</button>
     <a class="btn" href="auth.html">ログイン</a>
     <div class="progress" style="width:220px;"><div id="bar" class="bar"></div></div>
     <div id="pct" style="min-width:48px;text-align:right;">0%</div>
   </div>
 </div></header>
 <main class="wrap">
-  <div class="card"><div class="head"><div id="day_title">Day</div><div class="btn" onclick="openDays()">Day一覧</div></div><div class="body">
+  <div class="card"><div class="head"><div id="day_title">Day</div><div class="btn" onclick="document.getElementById('days').scrollIntoView({behavior:'smooth'})">Day一覧</div></div><div class="body">
     <p class="muted" id="scene">読み込み中…</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div class="grid two">
       <div>
         <label>借方科目</label><input id="dK" value="売掛金">
         <label>借方金額</label><input id="dA" placeholder="110000">
@@ -39,17 +49,35 @@ header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#fffff
       </div>
     </div>
     <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end;">
-      <button class="btn" onclick="skipDay()">スキップ</button>
-      <button class="btn primary" id="grade">採点</button>
+      <button class="btn" id="hint_btn">ヒント</button>
+      <button class="btn" id="skip_btn">スキップ</button>
+      <button class="btn primary" id="grade_btn">採点</button>
     </div>
     <div id="msg" class="muted" style="margin-top:8px;"></div>
   </div></div>
-  <div class="card" style="margin-top:12px;"><div class="body"><div id="days" class="muted"></div></div></div>
-</main>
-<script type="module">
-import { supa, getUser, saveProgress, loadProgressAll } from './supa.js';
 
-// ---- レッスン（lessons.json からロード：存在しない場合はデモ1件）
+  <div class="card" style="margin-top:12px;">
+    <div class="head"><div>Day一覧</div><button class="btn" id="resume_btn" style="display:none;">途中から再開</button></div>
+    <div class="body"><div id="days" class="list"></div></div>
+  </div>
+</main>
+
+<script type="module">
+import { supa, getUser, signOut, saveProgress, loadProgressAll } from './supa.js';
+
+// ログイン表示
+(async () => {
+  try {
+    const u = await getUser();
+    if (u) {
+      document.getElementById('who').textContent = u.email;
+      document.getElementById('logout').style.display = 'inline-block';
+    }
+  } catch(e) {}
+})();
+document.getElementById('logout').onclick = async () => { await signOut(); location.reload(); };
+
+// レッスン取得（lessons.json なければデモ）
 let DAYS = [];
 try {
   const res = await fetch('lessons.json', { cache:'no-store' });
@@ -60,19 +88,22 @@ try {
     id:'d1', title:'Day1 請求の計上（デモ）',
     scene:['B社に税抜100,000円で請求（消費税10%）。売掛金を計上します。'],
     expects:[{dK:'売掛金', dA:110000, cK:'売上高', cA:100000}],
-    hint:'借方 売掛金110,000 / 貸方 売上高100,000（内税なら売上高110,000でもOK）'
+    hint:'借方 売掛金110,000 / 貸方 売上高100,000＋仮受消費税10,000 でもOK'
   }];
 }
 
-let idx = 0;
+// 進捗のローカル保持（未ログイン時フォールバック）
 const SKEY='keiri_progress_total';
 let local = JSON.parse(localStorage.getItem(SKEY) || '{"done":0,"total":'+DAYS.length+'}');
 local.total = DAYS.length;
+const elBar = document.getElementById('bar'), elPct = document.getElementById('pct');
 function setBar() {
   const p = Math.round((local.done / Math.max(local.total,1)) * 100);
-  document.getElementById('bar').style.width = p+'%';
-  document.getElementById('pct').textContent = p+'%';
+  elBar.style.width = p + '%'; elPct.textContent = p + '%';
 }
+
+// Day描画
+let idx = 0;
 function renderDay(i=0){
   idx=i;
   const d = DAYS[i];
@@ -82,31 +113,24 @@ function renderDay(i=0){
   document.getElementById('cK').value = (d.expects?.[0]?.cK) || '売上高';
   document.getElementById('dA').value = '';
   document.getElementById('cA').value = '';
+  document.getElementById('msg').textContent='';
 }
-function openDays(){
-  document.getElementById('days').innerHTML = DAYS.map((d,i)=> `<button class="btn" onclick="location.href='#'">${i+1}. ${d.title}</button>`).join(' ');
+function renderList(doneSet=new Set()){
+  const box = document.getElementById('days');
+  box.innerHTML = DAYS.map((d,i)=>{
+    const done = doneSet.has(i+1);
+    return `<div class="item">
+      <div class="left"><span class="check ${done?'done':''}"></span><strong>${i+1}. ${d.title||''}</strong></div>
+      <div><button class="btn" onclick="go(${i})">${done?'もう一度':'はじめる'}</button></div>
+    </div>`;
+  }).join('');
 }
-window.openDays = openDays;
+window.go = (i)=>{ renderDay(i); scrollTo({top:0,behavior:'smooth'}); };
 
-// ---- サーバ進捗をロード（ログイン済みなら）
-async function hydrateFromServer(){
-  try{
-    const user = await getUser();
-    if(!user) { setBar(); renderDay(0); return; }
-    const rows = await loadProgressAll();
-    if(Array.isArray(rows) && rows.length){
-      const maxDone = Math.max(...rows.filter(r=>r.status==='done').map(r=>r.day_index||0), 0);
-      local.done = Math.max(local.done, maxDone);
-      localStorage.setItem(SKEY, JSON.stringify(local));
-    }
-  }catch(e){ console.warn(e); }
-  setBar(); renderDay(local.done);
-}
-hydrateFromServer();
-
-// ---- 採点
 function roughlyEqual(a,b){ return Math.abs((+a)-(+b))<=1; }
-document.getElementById('grade').onclick = async () => {
+
+// 採点
+document.getElementById('grade_btn').onclick = async () => {
   const d = DAYS[idx] || {};
   const dK = document.getElementById('dK').value.trim();
   const cK = document.getElementById('cK').value.trim();
@@ -123,29 +147,57 @@ document.getElementById('grade').onclick = async () => {
   const msg = document.getElementById('msg');
   if(!ok){ msg.innerHTML = '× もう一歩。'+(d.hint||''); return; }
   msg.innerHTML = '◎ 正解！';
-  if(local.done < idx+1){
-    local.done = idx+1;
-    localStorage.setItem(SKEY, JSON.stringify(local));
-    setBar();
-  }
+
+  // ローカル進捗
+  if(local.done < idx+1){ local.done = idx+1; localStorage.setItem(SKEY, JSON.stringify(local)); setBar(); }
+
   // サーバ保存（ログイン済みなら）
-  if(supa){
+  if (supa) {
     try{
       await saveProgress({ dayIndex: idx+1, status:'done', attempts:1, elapsedSeconds:30, lastAnswer:{dK,dA,cK,cA} });
       msg.innerHTML += '（サーバにも保存しました）';
+      await hydrateFromServer(); // 一覧も更新
     }catch(e){ console.warn(e); msg.innerHTML += '（未ログイン or サーバ保存エラー）'; }
   }
 };
 
-function skipDay(){
+// スキップ
+document.getElementById('skip_btn').onclick = async () => {
   const msg = document.getElementById('msg');
   msg.textContent = 'スキップしました。';
-  if(local.done < idx+1){
-    local.done = idx+1;
-    localStorage.setItem(SKEY, JSON.stringify(local));
-    setBar();
+  if(local.done < idx+1){ local.done = idx+1; localStorage.setItem(SKEY, JSON.stringify(local)); setBar(); }
+  if (supa) {
+    try{ await saveProgress({ dayIndex: idx+1, status:'skipped', attempts:0, elapsed_seconds:0 }); await hydrateFromServer(); }catch(e){}
   }
+};
+
+// ヒント
+document.getElementById('hint_btn').onclick = () => {
+  const d = DAYS[idx] || {};
+  document.getElementById('msg').textContent = d.hint || 'ヒントなし';
+};
+
+// サーバから復元
+async function hydrateFromServer(){
+  let doneSet=new Set();
+  try{
+    const rows = await loadProgressAll();
+    rows.forEach(r => { if(r.status==='done') doneSet.add(r.day_index); });
+    if(doneSet.size){
+      const maxDone = Math.max(...Array.from(doneSet));
+      if(local.done < maxDone){ local.done = maxDone; localStorage.setItem(SKEY, JSON.stringify(local)); }
+    }
+  }catch(e){}
+  setBar();
+  renderList(doneSet);
+  // 再開ボタン
+  const rb=document.getElementById('resume_btn');
+  if(local.done>0){ rb.style.display='inline-block'; rb.onclick=()=>go(local.done); }
+  renderDay(Math.max(local.done-1,0));
 }
-window.skipDay = skipDay;
+
+// 初期化
+setBar();
+await hydrateFromServer();
 </script>
 </body></html>
