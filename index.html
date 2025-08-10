@@ -1,421 +1,250 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>経理実務シミュレーター - Freee風スタイル</title>
-  <style>
-    :root{
-      --ink:#0f172a;
-      --muted:#64748b;
-      --bg:#f6f9fb;
-      --panel:#ffffff;
-      --border:#e2e8f0;
-      --brand:#12b4a6;      /* アクア系（freee風の爽やかトーン） */
-      --brand-ink:#0a5e57;
-      --brand-weak:#e6f7f5;
-      --accent:#2563eb;
-      --danger:#dc2626;
-      --ok:#059669;
-      --shadow: 0 8px 20px rgba(2, 80, 70, .06);
-      --radius: 14px;
-    }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif;
-      color:var(--ink);
-      background: var(--bg);
-    }
-    .layout{ display:grid; grid-template-columns: 260px 1fr; grid-template-rows: 64px 1fr; height:100%; }
-    .topbar{
-      grid-column: 1 / span 2;
-      height:64px; background:var(--panel); border-bottom:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between; padding:0 18px;
-      position:sticky; top:0; z-index:5;
-    }
-    .brand{ display:flex; align-items:center; gap:10px; font-weight:700; }
-    .logo{
-      width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, var(--brand), #7de3d7);
-      box-shadow: var(--shadow);
-    }
-    .top-actions{ display:flex; gap:8px; align-items:center; }
-    .btn{
-      border:1px solid var(--border); background:white; padding:8px 12px; border-radius:12px; cursor:pointer; font-size:13px;
-    }
-    .btn.primary{ background:var(--brand); border-color:transparent; color:white; }
-    .btn.ghost{ background:white; }
-    .search{ display:flex; align-items:center; gap:8px; background:#f1f5f9; border:1px solid var(--border); padding:8px 10px; border-radius:12px; }
-    .search input{ border:none; outline:none; background:transparent; width:240px; font-size:13px; }
-    .sidebar{
-      grid-row: 2; background:var(--panel); border-right:1px solid var(--border); padding:14px; position:sticky; top:64px; height:calc(100vh - 64px); overflow:auto;
-    }
-    .side-section{ margin-bottom:16px; }
-    .side-title{ color:var(--muted); font-size:12px; margin:8px 10px; }
-    .nav{ display:grid; gap:4px; }
-    .nav a{
-      display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:10px; color:#0f172a; text-decoration:none;
-    }
-    .nav a.active, .nav a:hover{ background:var(--brand-weak); color:var(--brand-ink); }
-    .chip{ font-size:11px; color:var(--brand-ink); background:var(--brand-weak); padding:2px 8px; border-radius:999px; border:1px solid #d9f2ef; }
-    .content{ grid-row:2; padding:18px; overflow:auto; }
-    .page{ max-width:1100px; margin:0 auto; display:none; }
-    .page.active{ display:block; animation:fade .15s ease-in; }
-    @keyframes fade{ from{opacity:.6; transform:translateY(2px);} to{opacity:1; transform:none;} }
-    .card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow: var(--shadow); }
-    .card .head{ padding:14px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-    .card .body{ padding:16px; }
-    .muted{ color:var(--muted); }
-    .kpis{ display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; }
-    .kpi{ padding:14px; }
-    .kpi .label{ font-size:12px; color:var(--muted); }
-    .kpi .value{ font-weight:700; font-size:20px; }
-    .grid{ display:grid; gap:12px; }
-    .two{ grid-template-columns: 1fr 1fr; }
-    .table{ width:100%; border-collapse:collapse; }
-    .table th, .table td{ padding:10px 8px; border-bottom:1px solid var(--border); text-align:left; font-size:13px; }
-    .table th{ color:var(--muted); font-weight:600; }
-    label{ display:block; font-size:12px; color:#334155; margin-bottom:6px; }
-    input, select, textarea{
-      width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:12px; font-size:13px; background:white; outline:none;
-    }
-    textarea{ resize:vertical; }
-    .row{ display:flex; gap:10px; align-items:center; }
-    .ok{ color:var(--ok); font-weight:600; }
-    .ng{ color:var(--danger); font-weight:600; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace; }
-    .badge{ font-size:11px; padding:3px 8px; border-radius:999px; background:var(--brand-weak); color:var(--brand-ink); border:1px solid #d9f2ef; }
-    .note{ background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; padding:10px; border-radius:10px; font-size:12px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>経理1か月ストーリー学習 v3（演出強化・10日）</title>
+<style>
+  :root{--bg:#f6fbff;--ink:#0f172a;--muted:#64748b;--panel:#ffffff;--border:#e2e8f0;--brand:#3bb3df;--brand2:#12b4a6;--ok:#10b981;--ng:#ef4444;--shadow:0 10px 30px rgba(17,24,39,.08);--radius:18px;--gold:#f7b500;--silver:#bfc5d1;--bronze:#c08457;}
+  *{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif;background:linear-gradient(180deg,#f6fbff 0%,#f9feff 100%);color:var(--ink)}
+  header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#fff,rgba(255,255,255,.85));backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+  .wrap{max-width:1100px;margin:0 auto;padding:14px 18px}.brand{display:flex;align-items:center;gap:10px;font-weight:800}.logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#a3dbf0);box-shadow:var(--shadow)}
+  .progress{height:10px;background:#e5f3ff;border-radius:999px;overflow:hidden}.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--brand2),#3bb3df);transition:width .3s ease}
+  .pill{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;background:#e6f7f5;color:#0a5e57;border:1px solid #d9f2ef}.btn{padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:14px}
+  .btn.primary{background:var(--brand2);color:#fff;border:none}.muted{color:var(--muted)}.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card .head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.card .body{padding:16px}
+  .grid{display:grid;gap:12px}.two{grid-template-columns:1fr 1fr}.scene{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}.scene svg{width:100%;height:auto}
+  label{display:block;font-size:12px;color:#334155;margin-bottom:6px}input,select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:#fff}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.ok{color:var(--ok);font-weight:600}.ng{color:var(--ng);font-weight:600}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Courier New',monospace}
+  .toast{position:fixed;right:16px;bottom:16px;background:#0f172a;color:#fff;padding:12px 14px;border-radius:12px;box-shadow:var(--shadow);opacity:.95;display:none;z-index:50}
+  .top{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;margin-top:16px}.center{text-align:center}.navdays{display:flex;gap:8px;flex-wrap:wrap}
+  .footer{color:#9aa3af;font-size:12px;text-align:center;margin:16px 0}
+  .modal{position:fixed;inset:0;background:rgba(15,23,42,.35);display:none;align-items:center;justify-content:center;z-index:40}
+  .modal .box{background:#fff;border-radius:20px;padding:22px;width:min(560px,92vw);box-shadow:var(--shadow);text-align:center;transform:scale(.9);opacity:.6;animation:pop .35s forwards}
+  @keyframes pop{to{transform:scale(1);opacity:1}}.medal{width:140px;height:140px;margin:0 auto 10px;border-radius:50%;position:relative;transform:scale(.8) rotate(-10deg);animation:medalIn .5s .15s forwards}
+  @keyframes medalIn{to{transform:scale(1) rotate(0deg)}}.medal::after{content:'';position:absolute;inset:16px;border-radius:50%;background:#fff}.badge{position:absolute;left:50%;transform:translateX(-50%);top:-12px;background:#12b4a6;color:#fff;padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:45}.diagram{background:#f8feff;border:1px dashed #cfeff7;border-radius:14px;padding:12px}.arrow{stroke:#12b4a6;stroke-width:2;fill:none;stroke-linecap:round;stroke-dasharray:6 6;animation:dash 1.6s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-100}}
+</style>
 </head>
 <body>
-  <div class="layout">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>経理実務シミュレーター</div>
-        <span class="chip">beta</span>
-      </div>
-      <div class="top-actions">
-        <div class="search">
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="7" stroke="#64748b" stroke-width="1.5"/><path d="M14 14l4 4" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <input placeholder="取引先・勘定科目・伝票番号で検索"/>
+<header>
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="brand"><div class="logo"></div>経理1か月ストーリー学習 <span class="pill">v3 演出強化</span></div>
+    <div class="row">
+      <div class="progress" style="width:280px;"><div id="bar" class="bar"></div></div>
+      <div class="mono" id="pct" style="min-width:48px;text-align:right;">0%</div>
+      <div class="mono" id="remain" style="min-width:90px;text-align:right;color:#64748b;">残り 10日</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="top">
+    <div class="top">
+      <div class="card">
+        <div class="head"><div>はじめに</div></div>
+        <div class="body">
+          <h2 style="margin:0 0 6px;">月初から月末まで、実務の経理を体験しよう。</h2>
+          <p class="muted">あなたは今日からA社の経理担当。ストーリーを読み、freee風フォームで仕訳を入力します。</p>
+          <div class="row" style="margin:10px 0 16px;">
+            <button class="btn primary" onclick="startFromBeginning()">月初から始める</button>
+            <button class="btn" onclick="openDays()">Day一覧を見る</button>
+          </div>
+          <div class="navdays" id="nav_days"></div>
         </div>
-        <button class="btn">ヘルプ</button>
-        <button class="btn primary" onclick="alert('この版はデモです。')">新規伝票</button>
+      </div>
+      <div class="card center">
+        <div class="head"><div>イメージ</div></div>
+        <div class="body">
+          <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="gTop" x1="0" x2="1"><stop offset="0" stop-color="#3bb3df"/><stop offset="1" stop-color="#12b4a6"/></linearGradient></defs>
+            <rect x="0" y="0" width="420" height="260" rx="18" fill="#f2fbff"/>
+            <circle cx="70" cy="70" r="40" fill="url(#gTop)" opacity="0.25"/>
+            <circle cx="340" cy="190" r="28" fill="url(#gTop)" opacity="0.25"/>
+            <rect x="30" y="180" width="360" height="40" rx="8" fill="#e6f7f5" stroke="#d0eeea"/>
+            <rect x="120" y="120" width="180" height="60" rx="8" fill="#fff" stroke="#e2e8f0"/>
+            <rect x="135" y="135" width="150" height="12" rx="6" fill="#3bb3df" opacity="0.6"/>
+            <rect x="135" y="155" width="120" height="8" rx="4" fill="#cfeff7"/>
+            <circle cx="80" cy="140" r="16" fill="#3bb3df" opacity="0.85"/>
+            <rect x="70" y="154" width="20" height="24" rx="6" fill="#a3dbf0"/>
+            <rect x="320" y="40" width="70" height="90" rx="10" fill="#f0fff9" stroke="#d1fae5"/>
+            <path d="M335 95 L355 75 L375 95" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/>
+          </svg>
+          <div class="muted" style="margin-top:8px;">※ 自作SVGイラスト。</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">保存は端末内（localStorage）。ログイン不要で学べます。</div>
+  </section>
+
+  <section id="lesson" style="display:none;">
+    <div class="card">
+      <div class="head"><div id="day_title">Day 1</div><div class="pill mono" id="day_idx">1 / 10</div></div>
+      <div class="body">
+        <div class="scene">
+          <div><svg id="day_svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg"></svg></div>
+          <div>
+            <p id="s1" class="muted">—</p><p id="s2" class="muted">—</p><p id="s3" class="muted">—</p>
+            <div class="row" style="margin-top:10px;">
+              <button class="btn" onclick="backToTop()">トップへ戻る</button>
+              <button class="btn primary" onclick="focusEntry()">仕訳に進む</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <aside class="sidebar">
-      <div class="side-section">
-        <div class="side-title">メイン</div>
-        <div class="nav">
-          <a href="#dash" data-page="dash" class="active">🏠 ダッシュボード</a>
-          <a href="#sales" data-page="sales">🧾 請求・売上</a>
-          <a href="#receipt" data-page="receipt">💰 入金消込</a>
-          <a href="#expense" data-page="expense">🧾 経費精算</a>
-          <a href="#journal" data-page="journal">📒 振替伝票</a>
-          <a href="#close" data-page="close">📊 月次決算</a>
-          <a href="#report" data-page="report">📈 学習レポート</a>
+    <div class="grid two" style="margin-top:12px;">
+      <div class="card">
+        <div class="head"><div>仕訳入力（freee風UI）</div></div>
+        <div class="body">
+          <div class="grid" style="grid-template-columns:1fr 1fr; gap:10px;">
+            <div><label>借方科目</label>
+              <select id="d_k">
+                <option>売掛金</option><option>当座預金</option><option>普通預金</option><option>現金</option>
+                <option>通信費</option><option>旅費交通費</option><option>前払費用</option><option>減価償却費</option><option>仮払金</option>
+                <option>商品</option><option>仕入</option><option>棚卸減耗損</option><option>租税公課</option><option>法人税等</option><option>消耗品費</option>
+              </select>
+            </div>
+            <div><label>借方金額</label><input id="d_a" placeholder="110000"></div>
+            <div><label>貸方科目</label>
+              <select id="c_k">
+                <option>売上高</option><option>仮受消費税</option><option>売掛金</option><option>未払費用</option><option>未払金</option>
+                <option>減価償却累計額</option><option>前受金</option><option>普通預金</option><option>当座預金</option><option>現金</option><option>仮払金</option>
+                <option>買掛金</option><option>棚卸資産</option><option>未払法人税等</option><option>立替金</option>
+              </select>
+            </div>
+            <div><label>貸方金額</label><input id="c_a" placeholder="100000"></div>
+            <div style="grid-column:1 / -1;"><label>メモ（任意）</label><input id="memo" placeholder="例：B社 4月納品分 請求書No.1234"></div>
+          </div>
+          <div class="row" style="margin-top:12px; justify-content:space-between;">
+            <div id="msg" class="muted"></div>
+            <div class="row">
+              <button class="btn" onclick="skipDay()">スキップ</button>
+              <button class="btn primary" onclick="grade()">採点</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="side-section">
-        <div class="side-title">クイック</div>
-        <div class="nav">
-          <a href="#help" data-page="help">❓ ヘルプ／使い方</a>
-        </div>
+
+      <div class="card">
+        <div class="head"><div>解説（図解・動く矢印）</div></div>
+        <div class="body"><div id="explain" class="diagram"></div></div>
       </div>
-    </aside>
+    </div>
 
-    <main class="content">
-      <!-- Dashboard -->
-      <section id="dash" class="page active">
-        <div class="grid kpis">
-          <div class="card kpi"><div class="label">未処理伝票</div><div class="value">3</div></div>
-          <div class="card kpi"><div class="label">消込待ち</div><div class="value">1</div></div>
-          <div class="card kpi"><div class="label">月次締め進捗</div><div class="value">40%</div></div>
-          <div class="card kpi"><div class="label">総合スコア</div><div class="value mono" id="score_total">0%</div></div>
-        </div>
-        <div class="grid two" style="margin-top:12px;">
-          <div class="card">
-            <div class="head"><div>最近の取引</div><span class="badge">デモ</span></div>
-            <div class="body">
-              <table class="table">
-                <thead><tr><th>日付</th><th>内容</th><th>金額</th><th>状態</th></tr></thead>
-                <tbody>
-                  <tr><td>4/30</td><td>取引先A 請求書</td><td class="mono">110,000</td><td><span class="badge">計上済</span></td></tr>
-                  <tr><td>5/31</td><td>取引先A 入金</td><td class="mono">110,000</td><td><span class="badge">消込済</span></td></tr>
-                  <tr><td>4/30</td><td>通信費（4月分）</td><td class="mono">22,000</td><td><span class="badge">未払計上</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card">
-            <div class="head"><div>ショートカット</div></div>
-            <div class="body">
-              <div class="row" style="gap:8px; flex-wrap:wrap;">
-                <button class="btn" onclick="nav('sales')">売上計上</button>
-                <button class="btn" onclick="nav('receipt')">入金消込</button>
-                <button class="btn" onclick="nav('expense')">経費精算</button>
-                <button class="btn" onclick="nav('close')">月次締め</button>
-              </div>
-              <div class="note" style="margin-top:12px;">※ このデモは「freee風」のUIを参考にしたオリジナルデザインです。</div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div class="row" style="margin-top:10px; justify-content:flex-end;">
+      <button class="btn" onclick="openDays()">Day一覧へ</button>
+      <button class="btn primary" id="next_btn" onclick="nextDay()" disabled>次の日へ</button>
+    </div>
+  </section>
 
-      <!-- Sales / Invoice -->
-      <section id="sales" class="page">
-        <div class="card">
-          <div class="head"><div>請求・売上の計上</div><button class="btn primary" onclick="gradeInvoice()">採点</button></div>
-          <div class="body grid two">
-            <div>
-              <label>借方科目</label>
-              <select id="inv_d_k"><option>売掛金</option><option>当座預金</option><option>現金</option></select>
-              <label style="margin-top:8px;">借方金額</label>
-              <input id="inv_d_a" placeholder="110000">
-            </div>
-            <div>
-              <div class="grid two">
-                <div>
-                  <label>貸方科目（1）</label>
-                  <select id="inv_c1_k"><option>売上高</option><option>仮受消費税</option><option>前受金</option></select>
-                </div>
-                <div>
-                  <label>貸方金額（1）</label><input id="inv_c1_a" placeholder="100000">
-                </div>
-                <div>
-                  <label>貸方科目（2 任意）</label>
-                  <select id="inv_c2_k"><option>（なし）</option><option>仮受消費税</option><option>売上高</option></select>
-                </div>
-                <div>
-                  <label>貸方金額（2 任意）</label><input id="inv_c2_a" placeholder="10000">
-                </div>
-              </div>
-            </div>
-            <div class="row" style="grid-column: 1 / -1; justify-content: space-between;">
-              <div id="inv_msg" class="muted"></div>
-              <div class="row muted"><div>伝票番号</div><div class="mono">SL-2404-001</div></div>
-            </div>
-          </div>
-        </div>
-      </section>
+  <section id="days" style="display:none; margin-top:10px;">
+    <div class="card">
+      <div class="head"><div>Day一覧（クリックで移動）</div></div>
+      <div class="body"><div class="navdays" id="days_list"></div></div>
+    </div>
+  </section>
+</main>
 
-      <!-- Receipt -->
-      <section id="receipt" class="page">
-        <div class="card">
-          <div class="head"><div>入金の消込</div><button class="btn primary" onclick="gradeReceipt()">採点</button></div>
-          <div class="body grid two">
-            <div>
-              <label>借方科目</label>
-              <select id="rcv_d_k"><option>当座預金</option><option>普通預金</option><option>現金</option></select>
-              <label style="margin-top:8px;">借方金額</label>
-              <input id="rcv_d_a" placeholder="110000">
-            </div>
-            <div>
-              <label>貸方科目</label>
-              <select id="rcv_c_k"><option>売掛金</option><option>売上高</option><option>前受金</option></select>
-              <label style="margin-top:8px;">貸方金額</label>
-              <input id="rcv_c_a" placeholder="110000">
-            </div>
-            <div class="row" style="grid-column: 1 / -1; justify-content: space-between;">
-              <div id="rcv_msg" class="muted"></div>
-              <div class="row muted"><div>入金日</div><div class="mono">2025-05-31</div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Expense -->
-      <section id="expense" class="page">
-        <div class="card">
-          <div class="head"><div>経費精算（未払計上）</div><button class="btn primary" onclick="gradeExpense()">採点</button></div>
-          <div class="body grid two">
-            <div>
-              <label>借方科目</label>
-              <select id="exp_d_k"><option>通信費</option><option>水道光熱費</option><option>旅費交通費</option></select>
-              <label style="margin-top:8px;">借方金額</label>
-              <input id="exp_d_a" placeholder="22000">
-            </div>
-            <div>
-              <label>貸方科目</label>
-              <select id="exp_c_k"><option>未払費用</option><option>未払金</option><option>買掛金</option></select>
-              <label style="margin-top:8px;">貸方金額</label>
-              <input id="exp_c_a" placeholder="22000">
-            </div>
-            <div class="row" style="grid-column: 1 / -1; justify-content: space-between;">
-              <div id="exp_msg" class="muted"></div>
-              <div class="row muted"><div>対象月</div><div class="mono">2025-04</div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Journal -->
-      <section id="journal" class="page">
-        <div class="card">
-          <div class="head"><div>振替伝票作成</div><button class="btn">テンプレから作成</button></div>
-          <div class="body">
-            <table class="table">
-              <thead><tr><th>借方科目</th><th>金額</th><th>貸方科目</th><th>金額</th><th>摘要</th></tr></thead>
-              <tbody>
-                <tr>
-                  <td><input placeholder="通信費"></td>
-                  <td><input placeholder="22000"></td>
-                  <td><input placeholder="未払費用"></td>
-                  <td><input placeholder="22000"></td>
-                  <td><input placeholder="4月分通信費の未払計上"></td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="row" style="margin-top:10px; justify-content:flex-end;">
-              <button class="btn primary" onclick="alert('デモでは保存しません')">保存</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Monthly Close -->
-      <section id="close" class="page">
-        <div class="card">
-          <div class="head"><div>月次決算（4月）</div><button class="btn primary" onclick="gradeMonthly()">試算表チェック</button></div>
-          <div class="body grid">
-            <div class="two">
-              <div>
-                <label>仕訳（1行ずつ）</label>
-                <textarea id="monthly_journal" rows="6" placeholder="（1）売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000
-（2）通信費 22,000 / 未払費用 22,000"></textarea>
-                <div class="note" style="margin-top:10px;">※ 本実装では税区分や承認フローまで検証予定</div>
-              </div>
-              <div>
-                <div class="card">
-                  <div class="head"><div>チェック結果</div></div>
-                  <div class="body" id="monthly_result">未チェック</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Report -->
-      <section id="report" class="page">
-        <div class="card">
-          <div class="head"><div>学習レポート</div></div>
-          <div class="body grid two">
-            <div>
-              <table class="table">
-                <thead><tr><th>カテゴリ</th><th>正答数</th></tr></thead>
-                <tbody>
-                  <tr><td>日常業務</td><td class="mono" id="score_daily">0/3</td></tr>
-                  <tr><td>月次決算</td><td class="mono" id="score_monthly">0/2</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div>
-              <div class="kpi card">
-                <div class="label">総合スコア</div>
-                <div class="value mono" id="score_total2">0%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Help -->
-      <section id="help" class="page">
-        <div class="card">
-          <div class="head"><div>ヘルプ / 使い方</div></div>
-          <div class="body">
-            <p class="muted">サイドバーの項目を順に進めれば、「freee風」のワークフローで練習できます。実装はオリジナルであり、特定サービスの画面を再現したものではありません。</p>
-          </div>
-        </div>
-      </section>
-
-    </main>
+<canvas id="confetti"></canvas>
+<div id="reward" class="modal">
+  <div class="box">
+    <div class="badge">NICE!</div>
+    <div id="medal" class="medal"></div>
+    <h3 id="tierTitle" style="margin:6px 0 4px;">クリア！</h3>
+    <div class="muted" id="tierDesc">今日のミッションを達成。次の日へ進もう！</div>
+    <div class="row" style="justify-content:center; margin-top:10px;">
+      <button class="btn" onclick="closeReward()">閉じる</button>
+      <button class="btn primary" onclick="nextDay(); closeReward()">次の日へ</button>
+    </div>
   </div>
+</div>
+
+<div id="toast" class="toast">保存しました。</div>
 
 <script>
-  // Navigation
-  document.querySelectorAll('.nav a').forEach(a=>{
-    a.addEventListener('click', (e)=>{
-      e.preventDefault();
-      const id = a.dataset.page;
-      nav(id);
-    });
-  });
-  function nav(id){
-    document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));
-    document.querySelector('.nav a[data-page="'+id+'"]').classList.add('active');
-    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    localStorage.setItem('active_page', id);
-  }
-  (function(){ const s = localStorage.getItem('active_page'); if(s) nav(s); })();
+const DAYS=[
+{id:'d1',title:'Day1（月初）請求の計上',scene:['月初、先月納品分の請求書を発行します。','B社へ税抜100,000円（消費税10%）。締日は4/30、入金は翌月末予定。','会計には売掛金を計上しましょう。'],point:'売掛金の計上（外税/内税どちらでもOK）',hint:'借方：売掛金 110,000 / 貸方：売上高 100,000, 仮受消費税 10,000（内税でも110,000/売上高で可）',expects:[{dK:'売掛金',dA:110000,cK:'売上高',cA:100000,altK:'仮受消費税',altA:10000,mode:'split'},{dK:'売掛金',dA:110000,cK:'売上高',cA:110000,mode:'gross'}],svg:'invoice',confetti:100},
+{id:'d2',title:'Day2 入金の消込',scene:['銀行にB社からの入金がありました。','金額は110,000円、手数料なしです。','対応する売掛金を消し込みます。'],point:'入金は預金の増加、相手は売掛金で消込',hint:'借方：当座/普通/現金 110,000 / 貸方：売掛金 110,000',expects:[{dKAny:['当座預金','普通預金','現金'],dA:110000,cK:'売掛金',cA:110000}],svg:'bank',confetti:120},
+{id:'d3',title:'Day3 経費の未払計上',scene:['4月分の通信費の請求書が未着のまま月次締めが近づいています。','発生している費用を当月に計上するため、未払計上が必要です。','税込22,000円として処理しましょう。'],point:'発生主義：通信費は当月に未払計上',hint:'借方：通信費 22,000 / 貸方：未払費用 22,000',expects:[{dK:'通信費',dA:22000,cK:'未払費用',cA:22000}],svg:'expense',confetti:130},
+{id:'d4',title:'Day4 前払費用の計上',scene:['SaaSツール年額132,000円（5/1〜翌4/30）を先払いしました。','提供前のサービス対価は資産（前払費用）で計上します。','支払は普通預金から。'],point:'前払費用の資産計上',hint:'借方：前払費用 132,000 / 貸方：普通預金（または当座） 132,000',expects:[{dK:'前払費用',dA:132000,cKAny:['普通預金','当座預金','現金'],cA:132000}],svg:'prepaid',confetti:140},
+{id:'d5',title:'Day5 月末の減価償却',scene:['取得価額200,000円の備品（耐用年数5年、定額法、残存なし）。','月末に当月分の減価償却を計上します。','月額はおよそ3,333円（端数OK）。'],point:'減価償却費 / 減価償却累計額（端数±1許容）',hint:'借方：減価償却費 3,333 / 貸方：減価償却累計額 3,333',expects:[{dK:'減価償却費',dAAny:[3333,3334],cK:'減価償却累計額',cAAny:[3333,3334]}],svg:'depr',confetti:160},
+{id:'d6',title:'Day6 仮払金の精算（旅費）',scene:['営業の出張で先に仮払金15,000円を渡していました。','領収書の提出があり、旅費交通費として精算します。','差額なしでの精算です。'],point:'旅費交通費 / 仮払金（仮払の消し込み）',hint:'借方：旅費交通費 15,000 / 貸方：仮払金 15,000',expects:[{dK:'旅費交通費',dA:15000,cK:'仮払金',cA:15000}],svg:'travel',confetti:170},
+{id:'d7',title:'Day7 売上計上漏れの修正',scene:['月次締めの直前、売上の計上漏れ（税抜50,000）が見つかりました。','当月分として売掛金を追加計上します（消費税10%）。','関係者へ共有して締めを完了します。'],point:'売掛金の追加計上（外税/内税どちらでもOK）',hint:'借方：売掛金 55,000 / 貸方：売上高 50,000, 仮受消費税 5,000（内税55,000/売上高もOK）',expects:[{dK:'売掛金',dA:55000,cK:'売上高',cA:50000,altK:'仮受消費税',altA:5000,mode:'split'},{dK:'売掛金',dA:55000,cK:'売上高',cA:55000,mode:'gross'}],svg:'close',confetti:180},
+{id:'d8',title:'Day8 前受金の処理',scene:['長期契約の前受として66,000円を受領しました（税10%内税）。','まだサービス提供前のため、収益ではなく負債処理します。','預金で受け取りました。'],point:'前受金の負債計上',hint:'借方：当座/普通/現金 66,000 / 貸方：前受金 66,000',expects:[{dKAny:['当座預金','普通預金','現金'],dA:66000,cK:'前受金',cA:66000}],svg:'advance',confetti:190},
+{id:'d9',title:'Day9 立替金の精算',scene:['総務が立て替えた備品代 8,800円（税込）を精算します。','勘定は消耗品費、支払は普通預金から。','立替金の消し込みです。'],point:'立替金精算：費用 / 立替金',hint:'借方：消耗品費 8,800 / 貸方：立替金 8,800（支払であれば 立替金 / 普通預金）',expects:[{dK:'消耗品費',dA:8800,cK:'立替金',cA:8800}],svg:'petty',confetti:200},
+{id:'d10',title:'Day10 法人税等の仮計上',scene:['決算見込みで法人税等を仮計上します（100,000円）。','納付は後日予定。','まずは負債として計上。'],point:'法人税等 / 未払法人税等',hint:'借方：法人税等 100,000 / 貸方：未払法人税等 100,000',expects:[{dK:'法人税等',dA:100000,cK:'未払法人税等',cA:100000}],svg:'tax',confetti:220}
+];
 
-  // Grading logic
-  function set(el,msg,ok){ el.innerHTML = ok ? `<span class='ok'>✔ ${msg}</span>` : `<span class='ng'>✖ ${msg}</span>`; }
-  function gradeInvoice(){
-    const ok = document.getElementById('inv_d_k').value==='売掛金' &&
-      Number(document.getElementById('inv_d_a').value)===110000 &&
-      ((document.getElementById('inv_c1_k').value==='売上高' && Number(document.getElementById('inv_c1_a').value)===100000 &&
-        document.getElementById('inv_c2_k').value==='仮受消費税' && Number(document.getElementById('inv_c2_a').value||0)===10000) ||
-       (document.getElementById('inv_c1_k').value==='売上高' && Number(document.getElementById('inv_c1_a').value)===110000 && document.getElementById('inv_c2_k').value==='（なし）'));
-    const el = document.getElementById('inv_msg');
-    set(el, ok ? '正解：売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000（内税も可）' : '不正解：基本は売掛金 110,000 / 売上高 100,000, 仮受消費税 10,000（内税でも可）', ok);
-    scoreUpdate('daily', ok);
-  }
-  function gradeReceipt(){
-    const ok = ['当座預金','普通預金','現金'].includes(document.getElementById('rcv_d_k').value) &&
-      Number(document.getElementById('rcv_d_a').value)===110000 &&
-      document.getElementById('rcv_c_k').value==='売掛金' &&
-      Number(document.getElementById('rcv_c_a').value)===110000;
-    const el = document.getElementById('rcv_msg');
-    set(el, ok ? '正解：当座/普通/現金 110,000 / 売掛金 110,000' : '不正解：入金は当座/普通/現金、消込は売掛金。金額110,000', ok);
-    scoreUpdate('daily', ok);
-  }
-  function gradeExpense(){
-    const ok = document.getElementById('exp_d_k').value==='通信費' &&
-      document.getElementById('exp_c_k').value==='未払費用' &&
-      Number(document.getElementById('exp_d_a').value)===22000 &&
-      Number(document.getElementById('exp_c_a').value)===22000;
-    const el = document.getElementById('exp_msg');
-    set(el, ok ? '正解：通信費 22,000 / 未払費用 22,000' : '不正解：4月分は未払計上（通信費 / 未払費用 22,000）', ok);
-    scoreUpdate('daily', ok);
-  }
-  function gradeMonthly(){
-    const text = document.getElementById('monthly_journal').value;
-    const ok1 = /売掛金/.test(text) && /110,?000/.test(text) && /売上高/.test(text);
-    const ok2 = /通信費/.test(text) && /22,?000/.test(text) && /(未払費用|未払金)/.test(text);
-    const box = document.getElementById('monthly_result');
-    box.innerHTML = `<div>${ok1?'✔':'✖'} 売掛計上（売掛金 / 売上高 + 仮受消費税）</div>
-                     <div>${ok2?'✔':'✖'} 未払計上（通信費 / 未払費用 22,000）</div>`;
-    scoreUpdate('monthly', ok1 && ok2);
-  }
+function sceneSVG(key){
+  const base=(accent)=>`<rect x="0" y="0" width="420" height="220" rx="16" fill="#fff" stroke="#e2e8f0"/><circle cx="360" cy="50" r="20" fill="${accent}" opacity="0.25"/><circle cx="50" cy="180" r="18" fill="${accent}" opacity="0.25"/>`;
+  const s={
+    invoice:`<g>${base('#3bb3df')}<rect x="30" y="26" width="120" height="18" rx="9" fill="#3bb3df" opacity=".9"/><rect x="30" y="60" width="180" height="10" rx="5" fill="#cfeff7"/><rect x="30" y="78" width="200" height="10" rx="5" fill="#e6f7f5"/><rect x="30" y="110" width="360" height="80" rx="10" fill="#f7fbff" stroke="#e2e8f0"/><rect x="60" y="130" width="120" height="12" rx="6" fill="#12b4a6" opacity=".7"/><rect x="60" y="150" width="200" height="12" rx="6" fill="#cfeff7"/></g>`,
+    bank:`<g>${base('#12b4a6')}<rect x="40" y="30" width="100" height="60" rx="10" fill="#f0fff9" stroke="#d1fae5"/><path d="M56 66 L85 45 L108 70" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="170" y="30" width="220" height="30" rx="8" fill="#e6f7f5" stroke="#d0eeea"/><rect x="170" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="170" y="90" width="190" height="10" rx="5" fill="#e6f7f5"/></g>`,
+    expense:`<g>${base('#3bb3df')}<rect x="40" y="30" width="80" height="80" rx="12" fill="#fff" stroke="#e2e8f0"/><rect x="60" y="46" width="40" height="10" rx="5" fill="#3bb3df"/><rect x="180" y="40" width="200" height="18" rx="9" fill="#e6f7f5"/><rect x="180" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="180" y="88" width="140" height="10" rx="5" fill="#e6f7f5"/></g>`,
+    prepaid:`<g>${base('#12b4a6')}<rect x="40" y="30" width="140" height="40" rx="10" fill="#12b4a6" opacity=".85"/><rect x="200" y="30" width="180" height="40" rx="10" fill="#a3dbf0"/><rect x="40" y="90" width="340" height="20" rx="10" fill="#e6f7f5"/><rect x="40" y="120" width="260" height="10" rx="5" fill="#cfeff7"/></g>`,
+    depr:`<g>${base('#3bb3df')}<rect x="40" y="30" width="340" height="30" rx="8" fill="#f0fff9" stroke="#d1fae5"/><rect x="60" y="40" width="120" height="12" rx="6" fill="#10b981"/><rect x="200" y="40" width="120" height="12" rx="6" fill="#a7f3d0"/><rect x="60" y="90" width="300" height="12" rx="6" fill="#cfeff7"/><rect x="60" y="110" width="220" height="12" rx="6" fill="#e6f7f5"/></g>`,
+    travel:`<g>${base('#3bb3df')}<rect x="30" y="30" width="120" height="80" rx="12" fill="#fff" stroke="#e2e8f0"/><circle cx="90" cy="70" r="22" fill="#3bb3df" opacity=".85"/><rect x="180" y="30" width="200" height="18" rx="9" fill="#e6f7f5"/><rect x="180" y="60" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="180" y="78" width="140" height="10" rx="5" fill="#e6f7f5"/></g>`,
+    close:`<g>${base('#12b4a6')}<rect x="40" y="30" width="80" height="80" rx="12" fill="#f0fff9" stroke="#d1fae5"/><path d="M56 82 L85 55 L108 86" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="150" y="30" width="230" height="30" rx="8" fill="#e6f7f5"/><rect x="150" y="70" width="200" height="10" rx="5" fill="#cfeff7"/><rect x="150" y="90" width="160" height="10" rx="5" fill="#e6f7f5"/></g>`,
+    advance:`<g>${base('#12b4a6')}<rect x="40" y="30" width="100" height="60" rx="10" fill="#f0fff9" stroke="#d1fae5"/><path d="M56 66 L85 45 L108 70" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="170" y="30" width="220" height="30" rx="8" fill="#e6f7f5" stroke="#d0eeea"/><rect x="170" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="170" y="90" width="190" height="10" rx="5" fill="#e6f7f5"/></g>`,
+    petty:`<g>${base('#3bb3df')}<rect x="40" y="30" width="100" height="60" rx="10" fill="#fff" stroke="#e2e8f0"/><rect x="60" y="46" width="60" height="10" rx="5" fill="#3bb3df"/><rect x="170" y="30" width="220" height="30" rx="8" fill="#e6f7f5" stroke="#d0eeea"/><rect x="170" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="170" y="90" width="190" height="10" rx="5" fill="#e6f7f5"/></g>`,
+    tax:`<g>${base('#3bb3df')}<rect x="40" y="30" width="80" height="80" rx="12" fill="#f0fff9" stroke="#d1fae5"/><rect x="150" y="30" width="230" height="30" rx="8" fill="#e6f7f5"/><rect x="150" y="70" width="200" height="10" rx="5" fill="#cfeff7"/><rect x="150" y="90" width="160" height="10" rx="5" fill="#e6f7f5"/></g>`
+  }; return s[key]||'';
+}
 
-  // Simple score tracker
-  function scoreUpdate(section, ok){
-    const s = JSON.parse(localStorage.getItem('score')||'{"daily":0,"monthly":0,"total":0}');
-    if(section==='daily'){ s.daily = Math.min(3, s.daily + (ok?1:0)); }
-    if(section==='monthly'){ s.monthly = Math.min(2, s.monthly + (ok?1:0)); }
-    const total = Math.round(((s.daily/3)*0.6 + (s.monthly/2)*0.4) * 100);
-    s.total = total;
-    localStorage.setItem('score', JSON.stringify(s));
-    // reflect UI
-    document.getElementById('score_total').textContent = total+'%';
-    document.getElementById('score_daily').textContent = s.daily+'/3';
-    document.getElementById('score_monthly').textContent = s.monthly+'/2';
-    document.getElementById('score_total2').textContent = total+'%';
-  }
-  (function(){ // restore score
-    const s = JSON.parse(localStorage.getItem('score')||'{"daily":0,"monthly":0,"total":0}');
-    document.getElementById('score_total').textContent = s.total+'%';
-    document.getElementById('score_daily').textContent = s.daily+'/3';
-    document.getElementById('score_monthly').textContent = s.monthly+'/2';
-    document.getElementById('score_total2').textContent = s.total+'%';
-  })();
+function explainSVG(day){
+  const a='<path class="arrow" d="M0 0 L60 0" />';
+  if(day.id==='d1'||day.id==='d7'){return `<svg viewBox="0 0 560 190" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="190" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">売掛金の計上（T字勘定）</text><rect x="20" y="40" width="230" height="120" rx="10" fill="#f8feff" stroke="#cfeff7"/><rect x="310" y="40" width="230" height="120" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="30" y="58" fill="#0f172a" font-size="12">借方：売掛金</text><text x="320" y="58" fill="#0f172a" font-size="12">貸方：売上高 / 仮受消費税</text><line x1="30" y1="70" x2="240" y2="70" stroke="#e2e8f0"/><line x1="320" y1="70" x2="530" y2="70" stroke="#e2e8f0"/><text x="40" y="98" fill="#12b4a6" font-size="20" font-weight="800">110,000</text><text x="330" y="98" fill="#3bb3df" font-size="16" font-weight="700">100,000</text><text x="330" y="122" fill="#3bb3df" font-size="16" font-weight="700">10,000</text><text x="330" y="148" fill="#64748b" font-size="11">（内税なら貸方は売上高 110,000）</text><g transform="translate(255,100)"><g>${a}<polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g></g></svg>`;}
+  if(day.id==='d2'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">入金消込の流れ</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="52" y="85" fill="#0a5e57" font-size="12">銀行入金</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="235" y="85" fill="#059669" font-size="12">預金の増加</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="432" y="85" fill="#334155" font-size="12">売掛金消込</text></svg>`;}
+  if(day.id==='d3'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">未払計上の考え方（発生主義）</text><rect x="30" y="60" width="160" height="40" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="40" y="85" fill="#0a5e57" font-size="12">4月に費用が発生</text><g transform="translate(190,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="260" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="268" y="85" fill="#334155" font-size="12">通信費</text><g transform="translate(380,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="450" y="60" width="80" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="458" y="85" fill="#059669" font-size="12">未払</text></svg>`;}
+  if(day.id==='d4'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">前払費用の流れ（資産→費用）</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="44" y="85" fill="#059669" font-size="12">支払（預金）</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="234" y="85" fill="#0a5e57" font-size="12">前払費用</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="432" y="85" fill="#334155" font-size="12">按分→費用化</text></svg>`;}
+  if(day.id==='d5'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">減価償却のイメージ</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="50" y="85" fill="#0a5e57" font-size="12">固定資産</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="140" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="230" y="85" fill="#334155" font-size="12">減価償却費</text><g transform="translate(360,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="430" y="60" width="100" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="438" y="85" fill="#059669" font-size="12">累計額</text></svg>`;}
+  if(day.id==='d6'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">仮払→精算の流れ</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="60" y="85" fill="#0a5e57" font-size="12">仮払</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="228" y="85" fill="#334155" font-size="12">旅費交通費</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="438" y="85" fill="#059669" font-size="12">精算完了</text></svg>`;}
+  if(day.id==='d8'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">前受金（受領→負債）</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="50" y="85" fill="#059669" font-size="12">入金</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="240" y="85" fill="#0a5e57" font-size="12">前受金</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="438" y="85" fill="#334155" font-size="12">提供後に収益化</text></svg>`;}
+  if(day.id==='d9'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">立替金の精算</text><rect x="30" y="60" width="140" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="56" y="85" fill="#0a5e57" font-size="12">立替金（従業員）</text><g transform="translate(170,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="240" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="258" y="85" fill="#334155" font-size="12">消耗品費</text><g transform="translate(360,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="430" y="60" width="100" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="442" y="85" fill="#059669" font-size="12">精算</text></svg>`;}
+  if(day.id==='d10'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">法人税等の仮計上</text><rect x="30" y="60" width="200" height="40" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="50" y="85" fill="#0a5e57" font-size="12">税額見込み（計算）</text><g transform="translate(230,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="300" y="60" width="100" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="310" y="85" fill="#334155" font-size="12">法人税等</text><g transform="translate(400,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="470" y="60" width="60" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="478" y="85" fill="#059669" font-size="12">未払</text></svg>`;}
+  return '';
+}
+
+let idx=0;let progress=JSON.parse(localStorage.getItem('month_progress_v3')||'{"done":0,"total":'+DAYS.length+'}');let attempts=0;let startTime=0;
+function updateBar(){const pct=Math.round((progress.done/Math.max(1,progress.total))*100);bar.style.width=pct+'%';pct.textContent=pct+'%';const remainDays=Math.max(0,DAYS.length-progress.done);remain.textContent='残り '+remainDays+'日';}
+function showToast(t){toast.textContent=t;toast.style.display='block';setTimeout(()=>toast.style.display='none',1500);}
+const bar=document.getElementById('bar'),pct=document.getElementById('pct'),toast=document.getElementById('toast'),remain=document.getElementById('remain');
+
+function startFromBeginning(){idx=0;openLesson(idx)}
+function openDays(){topEl.style.display='none';lessonEl.style.display='none';daysEl.style.display='block';buildDays()}
+function backToTop(){topEl.style.display='block';lessonEl.style.display='none';daysEl.style.display='none'}
+function openLesson(i){idx=i;attempts=0;startTime=performance.now();const d=DAYS[i];topEl.style.display='none';lessonEl.style.display='block';daysEl.style.display='none';day_title.textContent=d.title;day_idx.textContent=(i+1)+' / '+DAYS.length;s1.textContent=d.scene[0]||'';s2.textContent=d.scene[1]||'';s3.textContent=d.scene[2]||'';day_svg.innerHTML=sceneSVG(d.svg);explain.innerHTML=explainSVG(d);d_k.value='売掛金';d_a.value='';c_k.value='売上高';c_a.value='';msg.textContent='この日の取引の仕訳を入力してください。';next_btn.disabled=true;window.scrollTo({top:0,behavior:'smooth'})}
+function buildDays(){const list=days_list;list.innerHTML='';DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=(i+1)+'. '+d.title;b.addEventListener('click',()=>openLesson(i));list.appendChild(b)})}
+(function buildNav(){nav_days.innerHTML='';DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='btn';b.textContent='Day'+(i+1);b.addEventListener('click',()=>openLesson(i));nav_days.appendChild(b)})})();
+function focusEntry(){d_k.focus()}
+
+function roughlyEqual(a,b){return Math.abs(a-b)<=1}
+function grade(){attempts++;const d=DAYS[idx];const dK=d_k.value,dA=Number(d_a.value),cK=c_k.value,cA=Number(c_a.value);let ok=false;for(const ex of d.expects){const dKOK=ex.dKAny?ex.dKAny.includes(dK):(ex.dK?dK===ex.dK:true);const cKOK=ex.cKAny?ex.cKAny.includes(cK):(ex.cK?cK===ex.cK:true);const dAOK=ex.dAAny?ex.dAAny.some(x=>roughlyEqual(x,dA)):(typeof ex.dA==='number'?dA===ex.dA:true);const cAOK=ex.cAAny?ex.cAAny.some(x=>roughlyEqual(x,cA)):(typeof ex.cA==='number'?cA===ex.cA:true);if(dKOK&&cKOK&&dAOK&&cAOK){ok=true;break}}if(ok){msg.innerHTML='<span class="ok">🎉 正解！</span> '+d.hint;if(progress.done<idx+1){progress.done=idx+1;localStorage.setItem('month_progress_v3',JSON.stringify(progress));updateBar()}next_btn.disabled=false;const elapsed=(performance.now()-startTime)/1000;const tier=medalTier(attempts,elapsed);showMedal(tier);launchConfetti(d.confetti+tierBoost(tier))}else{msg.innerHTML='<span class="ng">⚠ もう一歩。</span> '+d.hint}}
+function skipDay(){next_btn.disabled=false;msg.textContent='スキップしました。正解は：'+DAYS[idx].hint}
+function nextDay(){if(idx<DAYS.length-1){openLesson(idx+1)}else{showToast('1か月分（10日）、完了！お疲れさまでした。');backToTop()}}
+
+function medalTier(attempts,elapsed){if(attempts<=1&&elapsed<45)return'gold';if(attempts<=2&&elapsed<120)return'silver';return'bronze'}
+function tierBoost(t){return t==='gold'?80:t==='silver'?40:0}
+
+const confettiCanvas=document.getElementById('confetti');const ctx=confettiCanvas.getContext('2d');function resize(){confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight}window.addEventListener('resize',resize);resize();let confetti=[]
+function launchConfetti(amount){const colors=['#12b4a6','#3bb3df','#a3dbf0','#10b981','#f59e0b','#ef4444'];confetti=Array.from({length:amount},(_,i)=>{const angle=Math.random()*Math.PI*2;const speed=2+Math.random()*4;return{x:confettiCanvas.width/2,y:0,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,size:6+Math.random()*6,color:colors[i%colors.length],rot:Math.random()*360,vr:(Math.random()-.5)*10,life:0,max:220}});animateConfetti()}
+function animateConfetti(){let alive=false;ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);confetti.forEach(p=>{p.life++;p.vy+=.08;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(p.life<p.max&&p.y<confettiCanvas.height+30){alive=true}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore()});if(alive)requestAnimationFrame(animateConfetti);else ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height)}
+
+const reward=document.getElementById('reward'),medal=document.getElementById('medal'),tierTitle=document.getElementById('tierTitle'),tierDesc=document.getElementById('tierDesc')
+function showMedal(t){reward.style.display='flex';let color='conic-gradient(from 0deg, var(--gold), #ffe08a, var(--gold))',name='GOLD',desc='速度・正確さバッチリ！';if(t==='silver'){color='conic-gradient(from 0deg, var(--silver), #e3e7ef, var(--silver))';name='SILVER';desc='安定クリア！'}if(t==='bronze'){color='conic-gradient(from 0deg, var(--bronze), #dfb398, var(--bronze))';name='BRONZE';desc='まずはクリア！次はスピードアップを狙おう'}medal.style.background=color;tierTitle.textContent=name+' MEDAL';tierDesc.textContent=desc}
+function closeReward(){reward.style.display='none'}
+
+const topEl=document.getElementById('top'),lessonEl=document.getElementById('lesson'),daysEl=document.getElementById('days')
+const day_title=document.getElementById('day_title'),day_idx=document.getElementById('day_idx')
+const s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3')
+const day_svg=document.getElementById('day_svg'),explain=document.getElementById('explain')
+const d_k=document.getElementById('d_k'),d_a=document.getElementById('d_a'),c_k=document.getElementById('c_k'),c_a=document.getElementById('c_a'),msg=document.getElementById('msg'),next_btn=document.getElementById('next_btn')
+const nav_days=document.getElementById('nav_days'),days_list=document.getElementById('days_list')
+function buildDays(){const list=days_list;list.innerHTML='';DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=(i+1)+'. '+d.title;b.addEventListener('click',()=>openLesson(i));list.appendChild(b)})}
+(function init(){updateBar();buildDays();nav_days.innerHTML='';DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='btn';b.textContent='Day'+(i+1);b.addEventListener('click',()=>openLesson(i));nav_days.appendChild(b)})})();
 </script>
 </body>
 </html>
