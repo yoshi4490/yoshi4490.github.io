@@ -1,148 +1,151 @@
-<!doctype html>
-<html lang="ja"><head>
+<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>経理ラボベース｜学習アプリ</title>
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<title>経理ラボベース｜学習（サーバ保存対応）</title>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <style>
-:root{--bg:#f7fbff;--ink:#0f172a;--muted:#64748b;--panel:#ffffff;--border:#e2e8f0;--brand:#3bb3df;--brand2:#12b4a6;--ok:#10b981;--ng:#ef4444;--shadow:0 10px 30px rgba(17,24,39,.08);--gold:#f7b500;--silver:#bfc5d1;--bronze:#c08457}
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif;background:linear-gradient(180deg,#f7fbff 0%,#fbffff 100%);color:var(--ink)}
-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.85));backdrop-filter: blur(6px);border-bottom:1px solid var(--border)}
+:root{--bg:#f7fbff;--ink:#0f172a;--muted:#64748b;--panel:#ffffff;--border:#e2e8f0;--brand:#12b4a6;--brand2:#3bb3df;--ok:#10b981;--ng:#ef4444;--shadow:0 10px 30px rgba(17,24,39,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,'Noto Sans JP',sans-serif;background:linear-gradient(180deg,#f7fbff 0%,#fbffff 100%);color:var(--ink)}
 .wrap{max-width:1100px;margin:0 auto;padding:14px 18px}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.85));backdrop-filter: blur(6px);border-bottom:1px solid var(--border)}
 .brand{display:flex;gap:10px;align-items:center;font-weight:800}
-.logo{width:24px;height:24px}
-.progress{height:10px;background:#e5f3ff;border-radius:999px;overflow:hidden}.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--brand2),#3bb3df);transition: width .3s ease}
-.pill{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;background:#e6f7f5;color:#0a5e57;border:1px solid #d9f2ef}
+.progress{height:10px;background:#e5f3ff;border-radius:999px;overflow:hidden}.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--brand),var(--brand2));transition: width .3s ease}
 .btn{padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:14px}
-.btn.primary{background:var(--brand2);color:#fff;border:none}
+.btn.primary{background:var(--brand);color:#fff;border:none}
 .muted{color:var(--muted)}.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
 .card .head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.card .body{padding:16px}.grid{display:grid;gap:12px}.two{grid-template-columns:1fr 1fr}.scene{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center}.scene svg{width:100%;height:auto}
-label{display:block;font-size:12px;color:#334155;margin-bottom:6px}input,select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:#fff}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.ok{color:var(--ok);font-weight:600}.ng{color:var(--ng);font-weight:600}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Courier New',monospace}
-.top{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;margin-top:16px}.center{text-align:center}.navdays{display:flex;gap:8px;flex-wrap:wrap}
-.footer{color:#9aa3af;font-size:12px;text-align:center;margin:16px 0}.modal{position:fixed;inset:0;background:rgba(15,23,42,.35);display:none;align-items:center;justify-content:center;z-index:40}
-.modal .box{background:#fff;border-radius:20px;padding:22px;width:min(560px,92vw);box-shadow:var(--shadow);text-align:center;transform:scale(.9);opacity:.6;animation:pop .35s forwards}
-@keyframes pop{to{transform:scale(1);opacity:1}}.medal{width:140px;height:140px;margin:0 auto 10px;border-radius:50%;position:relative;transform:scale(.8) rotate(-10deg);animation:medalIn .5s .15s forwards}
-@keyframes medalIn{to{transform:scale(1) rotate(0deg)}}.medal::after{content:'';position:absolute;inset:16px;border-radius:50%;background:#fff}#confetti{position:fixed;inset:0;pointer-events:none;z-index:45}
-.diagram{background:#f8feff;border:1px dashed #cfeff7;border-radius:14px;padding:12px}.arrow{stroke:#12b4a6;stroke-width:2;fill:none;stroke-linecap:round;stroke-dasharray:6 6;animation:dash 1.6s linear infinite}@keyframes dash{to{stroke-dashoffset:-100}}
-.toast{position:fixed;right:16px;bottom:16px;background:#0f172a;color:#fff;padding:12px 14px;border-radius:12px;box-shadow:var(--shadow);opacity:.95;display:none;z-index:50}
-</style></head>
-<body>
+.card .body{padding:16px}.grid{display:grid;gap:12px}.two{grid-template-columns:1fr 1fr}
+</style>
+</head><body>
 <header><div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
-  <div class="brand"><img class="logo" src="assets/logo.svg" alt=""><span>学習アプリ</span> <span class="pill">β</span></div>
-  <div class="row">
-    <a class="btn" href="index.html">ホームへ</a>
+  <div class="brand"><img src="assets/logo.svg" width="24" height="24"><span>学習アプリ</span></div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a class="btn" href="index.html">ホーム</a>
+    <a class="btn" href="auth.html">ログイン</a>
     <div class="progress" style="width:220px;"><div id="bar" class="bar"></div></div>
-    <div class="mono" id="pct" style="min-width:48px;text-align:right;">0%</div>
-    <div class="mono" id="remain" style="min-width:90px;text-align:right;color:#64748b;">残り 0日</div>
-  </div></div>
-</header>
+    <div id="pct" style="min-width:48px;text-align:right;">0%</div>
+  </div>
+</div></header>
 <main class="wrap">
-  <section id="top">
-    <div class="top">
-      <div class="card"><div class="head"><div>はじめに</div></div><div class="body">
-        <h2 style="margin:0 0 6px;">月初から月末まで、実務の経理を体験しよう。</h2>
-        <p class="muted">freee的UIで、ストーリー→問題→即時解説。未経験から「触れる実務」まで最短で。</p>
-        <div class="row" style="margin:10px 0 16px;">
-          <button class="btn primary" onclick="startFromBeginning()">月初から始める</button>
-          <button class="btn" onclick="openDays()">Day一覧を見る</button>
-        </div>
-        <div class="navdays" id="nav_days"></div>
-      </div></div>
-      <div class="card center"><div class="head"><div>イメージ</div></div><div class="body">
-        <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg">
-          <defs><linearGradient id="gTop" x1="0" x2="1"><stop offset="0" stop-color="#3bb3df"/><stop offset="1" stop-color="#12b4a6"/></linearGradient></defs>
-          <rect x="0" y="0" width="420" height="260" rx="18" fill="#f2fbff"/>
-          <circle cx="70" cy="70" r="40" fill="url(#gTop)" opacity="0.25"/>
-          <circle cx="340" cy="190" r="28" fill="url(#gTop)" opacity="0.25"/>
-          <rect x="30" y="180" width="360" height="40" rx="8" fill="#e6f7f5" stroke="#d0eeea"/>
-          <rect x="120" y="120" width="180" height="60" rx="8" fill="#fff" stroke="#e2e8f0"/>
-          <rect x="135" y="135" width="150" height="12" rx="6" fill="#3bb3df" opacity="0.6"/>
-          <rect x="135" y="155" width="120" height="8" rx="4" fill="#cfeff7"/>
-          <circle cx="80" cy="140" r="16" fill="#3bb3df" opacity="0.85"/>
-          <rect x="70" y="154" width="20" height="24" rx="6" fill="#a3dbf0"/>
-          <rect x="320" y="40" width="70" height="90" rx="10" fill="#f0fff9" stroke="#d1fae5"/>
-          <path d="M335 95 L355 75 L375 95" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/>
-        </svg>
-        <div class="muted" style="margin-top:8px;">※ SVGイラスト内製</div>
-      </div></div>
+  <div class="card"><div class="head"><div id="day_title">Day</div><div class="btn" onclick="openDays()">Day一覧</div></div><div class="body">
+    <p class="muted" id="scene">読み込み中…</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+        <label>借方科目</label><input id="dK" value="売掛金">
+        <label>借方金額</label><input id="dA" placeholder="110000">
+      </div>
+      <div>
+        <label>貸方科目</label><input id="cK" value="売上高">
+        <label>貸方金額</label><input id="cA" placeholder="100000">
+      </div>
     </div>
-    <div class="footer">保存は端末内（localStorage）。ログイン不要で学べます。</div>
-  </section>
-  <section id="lesson" style="display:none;">
-    <div class="card"><div class="head"><div id="day_title">Day</div><div class="pill mono" id="day_idx">-</div></div>
-      <div class="body"><div class="scene">
-        <div><svg id="day_svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg"></svg></div>
-        <div><p id="s1" class="muted">—</p><p id="s2" class="muted">—</p><p id="s3" class="muted">—</p>
-          <div class="row" style="margin-top:10px;">
-            <button class="btn" onclick="backToTop()">トップへ戻る</button>
-            <button class="btn primary" onclick="focusEntry()">仕訳に進む</button></div>
-        </div></div></div></div>
-    <div class="grid two" style="margin-top:12px;">
-      <div class="card"><div class="head"><div>仕訳入力（freee風UI）</div></div>
-        <div class="body"><div class="grid" style="grid-template-columns:1fr 1fr; gap:10px;">
-          <div><label>借方科目</label>
-            <select id="d_k"><option>売掛金</option><option>当座預金</option><option>普通預金</option><option>現金</option><option>通信費</option><option>旅費交通費</option><option>前払費用</option><option>減価償却費</option><option>仮払金</option><option>消耗品費</option><option>法人税等</option></select></div>
-          <div><label>借方金額</label><input id="d_a" placeholder="110000"></div>
-          <div><label>貸方科目</label>
-            <select id="c_k"><option>売上高</option><option>仮受消費税</option><option>売掛金</option><option>未払費用</option><option>未払金</option><option>減価償却累計額</option><option>前受金</option><option>普通預金</option><option>当座預金</option><option>現金</option><option>仮払金</option><option>未払法人税等</option><option>立替金</option></select></div>
-          <div><label>貸方金額</label><input id="c_a" placeholder="100000"></div>
-          <div style="grid-column:1 / -1;"><label>メモ（任意）</label><input id="memo" placeholder="例：B社 4月納品分 請求書No.1234"></div>
-        </div>
-        <div class="row" style="margin-top:12px; justify-content:space-between;">
-          <div id="msg" class="muted"></div>
-          <div class="row"><button class="btn" onclick="skipDay()">スキップ</button><button class="btn primary" onclick="grade()">採点</button></div>
-        </div></div></div>
-      <div class="card"><div class="head"><div>ミニクイズ（選択式）</div><div class="pill">理解チェック</div></div><div class="body"><div id="mcq_box"></div></div></div>
-      <div class="card" style="grid-column:1 / -1;"><div class="head"><div>解説（図解・動く矢印）</div></div><div class="body"><div id="explain" class="diagram"></div></div></div>
+    <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn" onclick="skipDay()">スキップ</button>
+      <button class="btn primary" id="grade">採点</button>
     </div>
-    <div class="row" style="margin-top:10px; justify-content:flex-end;"><button class="btn" onclick="openDays()">Day一覧へ</button><button class="btn primary" id="next_btn" onclick="nextDay()" disabled>次の日へ</button></div>
-  </section>
-  <section id="days" style="display:none; margin-top:10px;">
-    <div class="card"><div class="head"><div>Day一覧（クリックで移動）</div></div><div class="body"><div class="navdays" id="days_list"></div></div></div>
-  </section>
+    <div id="msg" class="muted" style="margin-top:8px;"></div>
+  </div></div>
+  <div class="card" style="margin-top:12px;"><div class="body"><div id="days" class="muted"></div></div></div>
 </main>
-<canvas id="confetti"></canvas>
-<div id="reward" class="modal"><div class="box"><div class="medal"></div><h3 id="tierTitle" style="margin:6px 0 4px;">クリア！</h3><div class="muted" id="tierDesc">今日のミッションを達成。次の日へ進もう！</div><div class="row" style="justify-content:center; margin-top:10px;"><button class="btn" onclick="closeReward()">閉じる</button><button class="btn primary" onclick="nextDay(); closeReward()">次の日へ</button></div></div></div>
-<div id="toast" class="toast">保存しました。</div>
-<script>
-let DAYS=[];let idx=0;let attempts=0;let startTime=0;let progress={done:0,total:0};
-async function loadLessons(){const res=await fetch('lessons.json',{cache:'no-store'});const data=await res.json();DAYS=data.days||[];progress=JSON.parse(localStorage.getItem('keiri_progress_mvp')||'{"done":0,"total":'+DAYS.length+'}');progress.total=DAYS.length;updateBar();buildNavDays();document.getElementById('remain').textContent='残り '+DAYS.length+'日'}
-function updateBar(){const p=Math.round((progress.done/Math.max(1,progress.total))*100);document.getElementById('bar').style.width=p+'%';document.getElementById('pct').textContent=p+'%'}
-function showToast(t){const el=document.getElementById('toast');el.textContent=t;el.style.display='block';setTimeout(()=>el.style.display='none',1500)}
-function startFromBeginning(){idx=0;openLesson(idx)}function openDays(){document.getElementById('top').style.display='none';document.getElementById('lesson').style.display='none';document.getElementById('days').style.display='block';buildDays()}function backToTop(){document.getElementById('top').style.display='block';document.getElementById('lesson').style.display='none';document.getElementById('days').style.display='none'}
-function buildNavDays(){const host=document.getElementById('nav_days');host.innerHTML='';DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='btn';b.textContent='Day'+(i+1);b.addEventListener('click',()=>openLesson(i));host.appendChild(b)})}
-function buildDays(){const host=document.getElementById('days_list');host.innerHTML='';DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=(i+1)+'. '+d.title;b.addEventListener('click',()=>openLesson(i));host.appendChild(b)})}
-function openLesson(i){idx=i;attempts=0;startTime=performance.now();const d=DAYS[i];document.getElementById('top').style.display='none';document.getElementById('lesson').style.display='block';document.getElementById('days').style.display='none';day_title.textContent=d.title;day_idx.textContent=(i+1)+' / '+DAYS.length;s1.textContent=d.scene?.[0]||'';s2.textContent=d.scene?.[1]||'';s3.textContent=d.scene?.[2]||'';day_svg.innerHTML=sceneSVG(d.svg);explain.innerHTML=explainSVG(d);renderMCQ(d.mcq);d_k.value='売掛金';d_a.value='';c_k.value='売上高';c_a.value='';memo.value='';msg.textContent='この日の取引の仕訳を入力してください。';next_btn.disabled=true;window.scrollTo({top:0,behavior:'smooth'})}
-function focusEntry(){d_k.focus()}
-function renderMCQ(mcq){const box=document.getElementById('mcq_box');box.innerHTML='';if(!mcq){return}const q=document.createElement('div');q.textContent=mcq.q;q.style.marginBottom='8px';box.appendChild(q);mcq.choices.forEach((c,ix)=>{const id='mc_'+Math.random().toString(36).slice(2);const w=document.createElement('div');w.innerHTML=`<input type="radio" name="mcq" id="${id}"><label for="${id}" style="margin-left:6px;">${c}</label>`;box.appendChild(w);w.querySelector('input').addEventListener('change',()=>{const hint=document.createElement('div');hint.style.marginTop='6px';hint.className='muted mcq_hint';if(ix===mcq.answer){hint.innerHTML='<span class="ok">◎ 正解</span>：'+mcq.why}else{hint.innerHTML='<span class="ng">× 不正解</span>：'+mcq.why}const old=box.querySelector('.mcq_hint');if(old)old.remove();box.appendChild(hint)})})}
-function roughlyEqual(a,b){return Math.abs(a-b)<=1}
-function matchExpect(dK,dA,cK,cA,ex){const dKOK=ex.dKAny?ex.dKAny.includes(dK):(ex.dK?dK===ex.dK:true);const cKOK=ex.cKAny?ex.cKAny.includes(cK):(ex.cK?cK===ex.cK:true);const dAOK=ex.dAAny?ex.dAAny.some(x=>roughlyEqual(x,dA)):(typeof ex.dA==='number'?dA===ex.dA:true);const cAOK=ex.cAAny?ex.cAAny.some(x=>roughlyEqual(x,cA)):(typeof ex.cA==='number'?cA===ex.cA:true);return dKOK&&cKOK&&dAOK&&cAOK}
-function grade(){attempts++;const d=DAYS[idx];const dK=d_k.value,dA=Number(d_a.value),cK=c_k.value,cA=Number(c_a.value);let ok=false;for(const ex of d.expects||[]){if(matchExpect(dK,dA,cK,cA,ex)){ok=true;break}}if(ok){msg.innerHTML='<span class="ok">🎉 正解！</span> '+(d.hint||'');if(progress.done<idx+1){progress.done=idx+1;localStorage.setItem('keiri_progress_mvp',JSON.stringify(progress));updateBar()}next_btn.disabled=false;const elapsed=(performance.now()-startTime)/1000;const tier=medalTier(attempts,elapsed);showMedal(tier);launchConfetti((d.confetti||150)+tierBoost(tier))}else{msg.innerHTML='<span class="ng">⚠ もう一歩。</span> '+(d.hint||'')}}
-function skipDay(){next_btn.disabled=false;const d=DAYS[idx];msg.textContent='スキップしました。正解は：'+(d.hint||'')}
-function nextDay(){if(idx<DAYS.length-1){openLesson(idx+1)}else{showToast('全レッスン完了！お疲れさまでした。');backToTop()}}
-function medalTier(attempts,elapsed){if(attempts<=1&&elapsed<45)return'gold';if(attempts<=2&&elapsed<120)return'silver';return'bronze'}
-function tierBoost(t){return t==='gold'?80:t==='silver'?40:0}
-const confettiCanvas=document.getElementById('confetti');const ctx=confettiCanvas.getContext('2d');function resize(){confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight}window.addEventListener('resize',resize);resize();let confetti=[]
-function launchConfetti(amount){const colors=['#12b4a6','#3bb3df','#a3dbf0','#10b981','#f59e0b','#ef4444'];confetti=Array.from({length:amount},(_,i)=>{const angle=Math.random()*Math.PI*2;const speed=2+Math.random()*4;return{x:confettiCanvas.width/2,y:0,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,size:6+Math.random()*6,color:colors[i%colors.length],rot:Math.random()*360,vr:(Math.random()-.5)*10,life:0,max:220}});animateConfetti()}
-function animateConfetti(){let alive=false;ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);confetti.forEach(p=>{p.life++;p.vy+=.08;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(p.life<p.max&&p.y<confettiCanvas.height+30){alive=true}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore()});if(alive)requestAnimationFrame(animateConfetti);else ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height)}
-const reward=document.getElementById('reward'),tierTitle=document.getElementById('tierTitle'),tierDesc=document.getElementById('tierDesc')
-function showMedal(t){reward.style.display='flex';let name='GOLD',desc='速度・正確さバッチリ！';if(t==='silver'){name='SILVER';desc='安定クリア！'}if(t==='bronze'){name='BRONZE';desc='まずはクリア！次はスピードアップを狙おう'}tierTitle.textContent=name+' MEDAL';tierDesc.textContent=desc}
-function closeReward(){reward.style.display='none'}
-const day_title=document.getElementById('day_title'),day_idx=document.getElementById('day_idx'),s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3'),day_svg=document.getElementById('day_svg'),explain=document.getElementById('explain'),d_k=document.getElementById('d_k'),d_a=document.getElementById('d_a'),c_k=document.getElementById('c_k'),c_a=document.getElementById('c_a'),memo=document.getElementById('memo'),msg=document.getElementById('msg'),next_btn=document.getElementById('next_btn'),nav_days=document.getElementById('nav_days'),days_list=document.getElementById('days_list')
-function sceneSVG(key){const base=(a)=>`<rect x="0" y="0" width="420" height="220" rx="16" fill="#fff" stroke="#e2e8f0"/><circle cx="360" cy="50" r="20" fill="${a}" opacity="0.25"/><circle cx="50" cy="180" r="18" fill="${a}" opacity="0.25"/>`;const s={invoice:`<g>${base('#3bb3df')}<rect x="30" y="26" width="120" height="18" rx="9" fill="#3bb3df" opacity=".9"/><rect x="30" y="60" width="180" height="10" rx="5" fill="#cfeff7"/><rect x="30" y="78" width="200" height="10" rx="5" fill="#e6f7f5"/><rect x="30" y="110" width="360" height="80" rx="10" fill="#f7fbff" stroke="#e2e8f0"/><rect x="60" y="130" width="120" height="12" rx="6" fill="#12b4a6" opacity=".7"/><rect x="60" y="150" width="200" height="12" rx="6" fill="#cfeff7"/></g>`,bank:`<g>${base('#12b4a6')}<rect x="40" y="30" width="100" height="60" rx="10" fill="#f0fff9" stroke="#d1fae5"/><path d="M56 66 L85 45 L108 70" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="170" y="30" width="220" height="30" rx="8" fill="#e6f7f5" stroke="#d0eeea"/><rect x="170" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="170" y="90" width="190" height="10" rx="5" fill="#e6f7f5"/></g>`,expense:`<g>${base('#3bb3df')}<rect x="40" y="30" width="80" height="80" rx="12" fill="#fff" stroke="#e2e8f0"/><rect x="60" y="46" width="40" height="10" rx="5" fill="#3bb3df"/><rect x="180" y="40" width="200" height="18" rx="9" fill="#e6f7f5"/><rect x="180" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="180" y="88" width="140" height="10" rx="5" fill="#e6f7f5"/></g>`,prepaid:`<g>${base('#12b4a6')}<rect x="40" y="30" width="140" height="40" rx="10" fill="#12b4a6" opacity=".85"/><rect x="200" y="30" width="180" height="40" rx="10" fill="#a3dbf0"/><rect x="40" y="90" width="340" height="20" rx="10" fill="#e6f7f5"/><rect x="40" y="120" width="260" height="10" rx="5" fill="#cfeff7"/></g>`,depr:`<g>${base('#3bb3df')}<rect x="40" y="30" width="340" height="30" rx="8" fill="#f0fff9" stroke="#d1fae5"/><rect x="60" y="40" width="120" height="12" rx="6" fill="#10b981"/><rect x="200" y="40" width="120" height="12" rx="6" fill="#a7f3d0"/><rect x="60" y="90" width="300" height="12" rx="6" fill="#cfeff7"/><rect x="60" y="110" width="220" height="12" rx="6" fill="#e6f7f5"/></g>`,travel:`<g>${base('#3bb3df')}<rect x="30" y="30" width="120" height="80" rx="12" fill="#fff" stroke="#e2e8f0"/><circle cx="90" cy="70" r="22" fill="#3bb3df" opacity=".85"/><rect x="180" y="30" width="200" height="18" rx="9" fill="#e6f7f5"/><rect x="180" y="60" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="180" y="78" width="140" height="10" rx="5" fill="#e6f7f5"/></g>`,close:`<g>${base('#12b4a6')}<rect x="40" y="30" width="80" height="80" rx="12" fill="#f0fff9" stroke="#d1fae5"/><path d="M56 82 L85 55 L108 86" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="150" y="30" width="230" height="30" rx="8" fill="#e6f7f5"/><rect x="150" y="70" width="200" height="10" rx="5" fill="#cfeff7"/><rect x="150" y="90" width="160" height="10" rx="5" fill="#e6f7f5"/></g>`,advance:`<g>${base('#12b4a6')}<rect x="40" y="30" width="100" height="60" rx="10" fill="#f0fff9" stroke="#d1fae5"/><path d="M56 66 L85 45 L108 70" stroke="#10b981" stroke-width="6" fill="none" stroke-linecap="round"/><rect x="170" y="30" width="220" height="30" rx="8" fill="#e6f7f5" stroke="#d0eeea"/><rect x="170" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="170" y="90" width="190" height="10" rx="5" fill="#e6f7f5"/></g>`,petty:`<g>${base('#3bb3df')}<rect x="40" y="30" width="100" height="60" rx="10" fill="#fff" stroke="#e2e8f0"/><rect x="60" y="46" width="60" height="10" rx="5" fill="#3bb3df"/><rect x="170" y="30" width="220" height="30" rx="8" fill="#e6f7f5" stroke="#d0eeea"/><rect x="170" y="70" width="160" height="10" rx="5" fill="#cfeff7"/><rect x="170" y="90" width="190" height="10" rx="5" fill="#e6f7f5"/></g>`,tax:`<g>${base('#3bb3df')}<rect x="40" y="30" width="80" height="80" rx="12" fill="#f0fff9" stroke="#d1fae5"/><rect x="150" y="30" width="230" height="30" rx="8" fill="#e6f7f5"/><rect x="150" y="70" width="200" height="10" rx="5" fill="#cfeff7"/><rect x="150" y="90" width="160" height="10" rx="5" fill="#e6f7f5"/></g>`};return s[key]||''}
-function explainSVG(day){const a='<path class="arrow" d="M0 0 L60 0" />';if(day.id==='d1'||day.id==='d7'){return `<svg viewBox="0 0 560 190" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="190" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">売掛金の計上（T字勘定）</text><rect x="20" y="40" width="230" height="120" rx="10" fill="#f8feff" stroke="#cfeff7"/><rect x="310" y="40" width="230" height="120" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="30" y="58" fill="#0f172a" font-size="12">借方：売掛金</text><text x="320" y="58" fill="#0f172a" font-size="12">貸方：売上高 / 仮受消費税</text><line x1="30" y1="70" x2="240" y2="70" stroke="#e2e8f0"/><line x1="320" y1="70" x2="530" y2="70" stroke="#e2e8f0"/><text x="40" y="98" fill="#12b4a6" font-size="20" font-weight="800">110,000</text><text x="330" y="98" fill="#3bb3df" font-size="16" font-weight="700">100,000</text><text x="330" y="122" fill="#3bb3df" font-size="16" font-weight="700">10,000</text><text x="330" y="148" fill="#64748b" font-size="11">（内税なら貸方は売上高 110,000）</text><g transform="translate(255,100)"><g transform="translate(0,0)">${a}<polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g></g></svg>`} if(day.id==='d2'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">入金消込の流れ</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="52" y="85" fill="#0a5e57" font-size="12">銀行入金</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="235" y="85" fill="#059669" font-size="12">預金の増加</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="432" y="85" fill="#334155" font-size="12">売掛金消込</text></svg>`} if(day.id==='d3'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">未払計上（発生主義）</text><rect x="30" y="60" width="160" height="40" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="40" y="85" fill="#0a5e57" font-size="12">4月に費用が発生</text><g transform="translate(190,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="260" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="268" y="85" fill="#334155" font-size="12">通信費</text><g transform="translate(380,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="450" y="60" width="80" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="458" y="85" fill="#059669" font-size="12">未払</text></svg>`} if(day.id==='d4'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">前払費用の流れ</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="44" y="85" fill="#059669" font-size="12">支払</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="234" y="85" fill="#0a5e57" font-size="12">前払費用</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="432" y="85" fill="#334155" font-size="12">費用化</text></svg>`} if(day.id==='d5'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">減価償却のイメージ</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="50" y="85" fill="#0a5e57" font-size="12">固定資産</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="140" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="230" y="85" fill="#334155" font-size="12">減価償却費</text><g transform="translate(360,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="430" y="60" width="100" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="438" y="85" fill="#059669" font-size="12">累計額</text></svg>`} if(day.id==='d6'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">仮払→精算の流れ</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="60" y="85" fill="#0a5e57" font-size="12">仮払</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="228" y="85" fill="#334155" font-size="12">旅費交通費</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="438" y="85" fill="#059669" font-size="12">精算</text></svg>`} if(day.id==='d8'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">前受金（受領→負債）</text><rect x="30" y="60" width="120" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="50" y="85" fill="#059669" font-size="12">入金</text><g transform="translate(150,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="220" y="60" width="120" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="240" y="85" fill="#0a5e57" font-size="12">前受金</text><g transform="translate(340,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="410" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="438" y="85" fill="#334155" font-size="12">提供後に収益化</text></svg>`} if(day.id==='d9'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">立替金の精算</text><rect x="30" y="60" width="140" height="40" rx="10" fill="#e6f7f5" stroke="#cfeff7"/><text x="56" y="85" fill="#0a5e57" font-size="12">立替金（従業員）</text><g transform="translate(170,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="240" y="60" width="120" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="258" y="85" fill="#334155" font-size="12">消耗品費</text><g transform="translate(360,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="430" y="60" width="100" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="442" y="85" fill="#059669" font-size="12">精算</text></svg>`} if(day.id==='d10'){return `<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="560" height="170" rx="14" fill="#fff" stroke="#e2e8f0"/><text x="20" y="24" fill="#0f172a" font-size="14" font-weight="700">法人税等の仮計上</text><rect x="30" y="60" width="200" height="40" rx="10" fill="#f8feff" stroke="#cfeff7"/><text x="50" y="85" fill="#0a5e57" font-size="12">税額見込み</text><g transform="translate(230,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="300" y="60" width="100" height="40" rx="10" fill="#fff" stroke="#e2e8f0"/><text x="310" y="85" fill="#334155" font-size="12">法人税等</text><g transform="translate(400,80)"><path class="arrow" d="M0 0 L60 0"/><polygon points="60,-4 70,0 60,4" fill="#12b4a6"/></g><rect x="470" y="60" width="60" height="40" rx="10" fill="#f0fff9" stroke="#d1fae5"/><text x="478" y="85" fill="#059669" font-size="12">未払</text></svg>`} return ''}
-function medalTier(attempts,elapsed){if(attempts<=1&&elapsed<45)return'gold';if(attempts<=2&&elapsed<120)return'silver';return'bronze'}
-function tierBoost(t){return t==='gold'?80:t==='silver'?40:0}
-const confettiCanvas=document.getElementById('confetti');const ctx=confettiCanvas.getContext('2d');function resize(){confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight}window.addEventListener('resize',resize);resize();let confetti=[]
-function launchConfetti(amount){const colors=['#12b4a6','#3bb3df','#a3dbf0','#10b981','#f59e0b','#ef4444'];confetti=Array.from({length:amount},(_,i)=>{const angle=Math.random()*Math.PI*2;const speed=2+Math.random()*4;return{x:confettiCanvas.width/2,y:0,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,size:6+Math.random()*6,color:colors[i%colors.length],rot:Math.random()*360,vr:(Math.random()-.5)*10,life:0,max:220}});animateConfetti()}
-function animateConfetti(){let alive=false;ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);confetti.forEach(p=>{p.life++;p.vy+=.08;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(p.life<p.max&&p.y<confettiCanvas.height+30){alive=true}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore()});if(alive)requestAnimationFrame(animateConfetti);else ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height)}
-function showMedal(t){reward.style.display='flex';let name='GOLD',desc='速度・正確さバッチリ！';if(t==='silver'){name='SILVER';desc='安定クリア！'}if(t==='bronze'){name='BRONZE';desc='まずはクリア！次はスピードアップを狙おう'}tierTitle.textContent=name+' MEDAL';tierDesc.textContent=desc}
-function closeReward(){reward.style.display='none'}
-const day_title=document.getElementById('day_title'),day_idx=document.getElementById('day_idx'),s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3'),day_svg=document.getElementById('day_svg'),explain=document.getElementById('explain'),d_k=document.getElementById('d_k'),d_a=document.getElementById('d_a'),c_k=document.getElementById('c_k'),c_a=document.getElementById('c_a'),memo=document.getElementById('memo'),msg=document.getElementById('msg'),next_btn=document.getElementById('next_btn'),nav_days=document.getElementById('nav_days'),days_list=document.getElementById('days_list')
-function grade(){attempts++;const d=DAYS[idx];const dK=d_k.value,dA=Number(d_a.value),cK=c_k.value,cA=Number(c_a.value);let ok=false;for(const ex of d.expects||[]){const dKOK=ex.dKAny?ex.dKAny.includes(dK):(ex.dK?dK===ex.dK:true);const cKOK=ex.cKAny?ex.cKAny.includes(cK):(ex.cK?cK===ex.cK:true);const dAOK=ex.dAAny?ex.dAAny.some(x=>Math.abs(x-dA)<=1):(typeof ex.dA==='number'?dA===ex.dA:true);const cAOK=ex.cAAny?ex.cAAny.some(x=>Math.abs(x-cA)<=1):(typeof ex.cA==='number'?cA===ex.cA:true);if(dKOK&&cKOK&&dAOK&&cAOK){ok=true;break}}if(ok){msg.innerHTML='<span class="ok">🎉 正解！</span> '+(d.hint||'');if(progress.done<idx+1){progress.done=idx+1;localStorage.setItem('keiri_progress_mvp',JSON.stringify(progress));updateBar()}next_btn.disabled=false;const elapsed=(performance.now()-startTime)/1000;const tier=medalTier(attempts,elapsed);showMedal(tier);launchConfetti((d.confetti||150)+tierBoost(tier))}else{msg.innerHTML='<span class="ng">⚠ もう一歩。</span> '+(d.hint||'')}}
-function nextDay(){if(idx<DAYS.length-1){openLesson(idx+1)}else{showToast('全レッスン完了！お疲れさまでした。');backToTop()}}
-const reward=document.getElementById('reward')
-loadLessons();
+<script type="module">
+import { supa, getUser, saveProgress, loadProgressAll } from './supa.js';
+
+// ---- レッスン（lessons.json からロード：存在しない場合はデモ1件）
+let DAYS = [];
+try {
+  const res = await fetch('lessons.json', { cache:'no-store' });
+  const data = await res.json();
+  DAYS = data.days || [];
+} catch(e) {
+  DAYS = [{
+    id:'d1', title:'Day1 請求の計上（デモ）',
+    scene:['B社に税抜100,000円で請求（消費税10%）。売掛金を計上します。'],
+    expects:[{dK:'売掛金', dA:110000, cK:'売上高', cA:100000}],
+    hint:'借方 売掛金110,000 / 貸方 売上高100,000（内税なら売上高110,000でもOK）'
+  }];
+}
+
+let idx = 0;
+const SKEY='keiri_progress_total';
+let local = JSON.parse(localStorage.getItem(SKEY) || '{"done":0,"total":'+DAYS.length+'}');
+local.total = DAYS.length;
+function setBar() {
+  const p = Math.round((local.done / Math.max(local.total,1)) * 100);
+  document.getElementById('bar').style.width = p+'%';
+  document.getElementById('pct').textContent = p+'%';
+}
+function renderDay(i=0){
+  idx=i;
+  const d = DAYS[i];
+  document.getElementById('day_title').textContent = d.title || ('Day'+(i+1));
+  document.getElementById('scene').textContent = (d.scene && d.scene[0]) || '';
+  document.getElementById('dK').value = (d.expects?.[0]?.dK) || '売掛金';
+  document.getElementById('cK').value = (d.expects?.[0]?.cK) || '売上高';
+  document.getElementById('dA').value = '';
+  document.getElementById('cA').value = '';
+}
+function openDays(){
+  document.getElementById('days').innerHTML = DAYS.map((d,i)=> `<button class="btn" onclick="location.href='#'">${i+1}. ${d.title}</button>`).join(' ');
+}
+window.openDays = openDays;
+
+// ---- サーバ進捗をロード（ログイン済みなら）
+async function hydrateFromServer(){
+  try{
+    const user = await getUser();
+    if(!user) { setBar(); renderDay(0); return; }
+    const rows = await loadProgressAll();
+    if(Array.isArray(rows) && rows.length){
+      const maxDone = Math.max(...rows.filter(r=>r.status==='done').map(r=>r.day_index||0), 0);
+      local.done = Math.max(local.done, maxDone);
+      localStorage.setItem(SKEY, JSON.stringify(local));
+    }
+  }catch(e){ console.warn(e); }
+  setBar(); renderDay(local.done);
+}
+hydrateFromServer();
+
+// ---- 採点
+function roughlyEqual(a,b){ return Math.abs((+a)-(+b))<=1; }
+document.getElementById('grade').onclick = async () => {
+  const d = DAYS[idx] || {};
+  const dK = document.getElementById('dK').value.trim();
+  const cK = document.getElementById('cK').value.trim();
+  const dA = Number(document.getElementById('dA').value);
+  const cA = Number(document.getElementById('cA').value);
+  let ok=false;
+  for(const ex of (d.expects||[])){
+    const dk = ex.dK ? dK===ex.dK : true;
+    const ck = ex.cK ? cK===ex.cK : true;
+    const da = (typeof ex.dA==='number') ? dA===ex.dA : ex.dAAny ? ex.dAAny.some(x=>roughlyEqual(x,dA)) : true;
+    const ca = (typeof ex.cA==='number') ? cA===ex.cA : ex.cAAny ? ex.cAAny.some(x=>roughlyEqual(x,cA)) : true;
+    if(dk&&ck&&da&&ca){ ok=true; break; }
+  }
+  const msg = document.getElementById('msg');
+  if(!ok){ msg.innerHTML = '× もう一歩。'+(d.hint||''); return; }
+  msg.innerHTML = '◎ 正解！';
+  if(local.done < idx+1){
+    local.done = idx+1;
+    localStorage.setItem(SKEY, JSON.stringify(local));
+    setBar();
+  }
+  // サーバ保存（ログイン済みなら）
+  if(supa){
+    try{
+      await saveProgress({ dayIndex: idx+1, status:'done', attempts:1, elapsedSeconds:30, lastAnswer:{dK,dA,cK,cA} });
+      msg.innerHTML += '（サーバにも保存しました）';
+    }catch(e){ console.warn(e); msg.innerHTML += '（未ログイン or サーバ保存エラー）'; }
+  }
+};
+
+function skipDay(){
+  const msg = document.getElementById('msg');
+  msg.textContent = 'スキップしました。';
+  if(local.done < idx+1){
+    local.done = idx+1;
+    localStorage.setItem(SKEY, JSON.stringify(local));
+    setBar();
+  }
+}
+window.skipDay = skipDay;
 </script>
 </body></html>

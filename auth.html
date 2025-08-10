@@ -21,26 +21,23 @@ input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:
     <button class="btn" id="signup">新規登録</button>
     <button class="btn" id="signin" style="background:#2f7bdc;">ログイン</button>
     <div id="msg" class="small" style="margin-top:8px;"></div>
-    <div class="small" style="margin-top:8px;"><a href="app_pro.html">学習へ</a></div>
+    <div class="small" style="margin-top:8px;"><a href="app.html">学習へ</a></div>
   </div>
 </div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
-function ok(){ return SUPABASE_URL && SUPABASE_ANON_KEY; }
-const supa = ok() ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth:{persistSession:true} }) : null;
+const supa = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth:{ persistSession:true } });
 const $=id=>document.getElementById(id);
 $('signup').onclick=async()=>{
-  if(!supa){ $('msg').textContent='（設定未入力）config.js を先に埋めてください'; return; }
   $('msg').textContent='登録中…';
   const { error } = await supa.auth.signUp({ email:$('email').value, password:$('password').value });
   $('msg').textContent = error ? 'エラー: '+error.message : '登録しました。メール確認後ログインしてください。';
 };
 $('signin').onclick=async()=>{
-  if(!supa){ $('msg').textContent='（設定未入力）config.js を先に埋めてください'; return; }
   $('msg').textContent='ログイン中…';
   const { error } = await supa.auth.signInWithPassword({ email:$('email').value, password:$('password').value });
   $('msg').textContent = error ? 'エラー: '+error.message : 'OK！ 学習へ移動します…';
-  if(!error) setTimeout(()=> location.href='app_pro.html', 800);
+  if(!error) setTimeout(()=> location.href='app.html', 800);
 };
 </script></body></html>
