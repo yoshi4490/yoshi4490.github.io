@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="経理ラボベース ロゴ">
+  <defs>
+    <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2f7bdc"/><stop offset="1" stop-color="#7fb0f0"/>
+    </linearGradient>
+    <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#13b58c"/><stop offset="1" stop-color="#2ec7a1"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="68" height="68" rx="14" fill="url(#lg1)"/>
+  <rect x="20" y="18" width="40" height="44" rx="8" fill="#fff"/>
+  <g fill="#e5eefc">
+    <rect x="26" y="26" width="8" height="8" rx="2"/>
+    <rect x="38" y="26" width="8" height="8" rx="2"/>
+    <rect x="50" y="26" width="8" height="8" rx="2"/>
+    <rect x="26" y="38" width="8" height="8" rx="2"/>
+    <rect x="38" y="38" width="8" height="8" rx="2"/>
+    <rect x="50" y="38" width="8" height="8" rx="2"/>
+    <rect x="26" y="50" width="8" height="8" rx="2"/>
+    <rect x="38" y="50" width="8" height="8" rx="2"/>
+  </g>
+  <path d="M30 58 L44 44 L48 48 L58 38" stroke="url(#lg2)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="58,38 57,44 63,43" fill="#2ec7a1"/>
+</svg>
